@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
+import Home from 'Home';
+
 const AppWrapper = styled.div`
 	font-family: 'Open Sans', sans-serif;
 	width: 100%;
@@ -20,6 +22,7 @@ export default class App extends Component {
 		return (
 			<AppWrapper>
 				<Header/>
+				<Home/>
 				<Footer/>
 			</AppWrapper>
 		)
