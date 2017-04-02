@@ -2,27 +2,28 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 
-const A = styled.a`
-	color: #f43449;
+import Spotify from 'react-spotify-player';
 
-	&:hover {
-		color: #ff7e81;
-	}
-`;
+// Spotify Player Options
+const size = {
+  width: '100%',
+  height: 100,
+};
+
+const view = 'coverart'; // or 'coverart'
+const theme = 'black'; // or 'white'
 
 export default class Footer extends Component {
 	render() {
 		return (
 				<Row center='xs' around='xs'>
-					<Col xs={3}>
-						<A href="https://www.facebook.com/theplasticsrevolutionmx/"><i className="fa fa-facebook"></i></A>
-					</Col>
-					<Col xs={3}>
-						<A href="https://twitter.com/plasticsrev/"><i className="fa fa-twitter"></i></A>
-					</Col>
-					<Col xs={3}>
-						<A href="https://www.instagram.com/plasticsrevolution/"><i className="fa fa-instagram"></i></A>
-					</Col>
+					<Col>
+						<Spotify
+					  		uri="spotify:album:55Ul8L6tE3eO6JT8L11byT"
+					  		size={size}
+					  		view={view}
+					  	theme={theme}/>
+			  		</Col>
 				</Row>
 		)
 	}
