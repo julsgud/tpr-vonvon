@@ -28,7 +28,6 @@ export default class Header extends Component {
 				<Col xs={6}>
 					<H3> The Plastics Revolution </H3>
 				</Col>
-
 				<Col xs={1}>
 					<StyledIconLink url="https://www.facebook.com/theplasticsrevolutionmx/" class="fa-facebook"/>
 				</Col>
