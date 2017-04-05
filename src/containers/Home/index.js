@@ -14,10 +14,6 @@ const H3 = styled.h3`
 	color: ${palette.black};
 `;
 
-const responseFb = (data) => {
-	console.log(data);
-}
-
 export default class Home extends Component {
 	constructor(props) {
 		super(props);
