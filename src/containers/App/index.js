@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
-import Home from 'Home';
+import Home from 'containers/Home';
 
 const AppWrapper = styled.div`
 	font-family: 'Open Sans', sans-serif;
@@ -18,11 +18,25 @@ const AppWrapper = styled.div`
 `;
 
 export default class App extends Component {
+	constructor() {
+		super();
+		this.state = {
+			userInfo: {}
+		};
+		this.handleLogIn = this.handleLogIn.bind(this);
+	}
+
+	handleLogIn(data) {
+		let userInfo = data;
+		this.setState({userInfo: userInfo});
+		console.log(this.state.userInfo);
+	}
+
 	render() {
 		return (
 			<AppWrapper>
 				<Header/>
-				<Home/>
+				<Home handler={this.handleLogIn}/>
 				<Footer/>
 			</AppWrapper>
 		)
