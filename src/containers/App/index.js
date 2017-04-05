@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
 import styled from 'styled-components';
 
@@ -36,7 +37,11 @@ export default class App extends Component {
 		return (
 			<AppWrapper>
 				<Header/>
-				<Home handler={this.handleLogIn}/>
+				<Router>
+					<Route exact path='/' render={() => 
+						<Home handler={this.handleLogIn}/>
+					}/>
+				</Router>
 				<Footer/>
 			</AppWrapper>
 		)
