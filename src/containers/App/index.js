@@ -7,6 +7,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 
 import Home from 'containers/Home';
+import Select from 'containers/Select';
 
 const AppWrapper = styled.div`
 	font-family: 'Open Sans', sans-serif;
@@ -18,11 +19,11 @@ const AppWrapper = styled.div`
   	flex-direction: column;
 `;
 
-export default class App extends Component {
+class App extends Component {
 	constructor() {
 		super();
 		this.state = {
-			userInfo: {}
+			userInfo: null
 		};
 		this.handleLogIn = this.handleLogIn.bind(this);
 	}
@@ -30,20 +31,31 @@ export default class App extends Component {
 	handleLogIn(data) {
 		let userInfo = data;
 		this.setState({userInfo: userInfo});
-		console.log(this.state.userInfo);
+		console.log(data);
 	}
 
 	render() {
 		return (
-			<AppWrapper>
-				<Header/>
-				<Router>
-					<Route exact path='/' render={() => 
-						<Home handler={this.handleLogIn}/>
-					}/>
-				</Router>
-				<Footer/>
-			</AppWrapper>
+			<Router>
+				<AppWrapper>
+					<Header/>
+						<div>
+							<Route exact path='/' render={({history}) => 
+								<Home handler={this.handleLogIn} history={history}/>
+							}/>
+							<Route exact path='/select' render={() =>
+								<Select user={this.state.userInfo}/>
+							}/>
+						</div>
+					<Footer/>
+				</AppWrapper>
+			</Router>
 		)
 	}
 }
+
+App.contextTypes = {
+	router: React.PropTypes.object
+};
+
+export default App;
