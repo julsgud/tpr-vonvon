@@ -14,11 +14,7 @@ const H3 = styled.h3`
 	color: ${palette.black};
 `;
 
-export default class Home extends Component {
-	constructor(props) {
-		super(props);
-	}
-
+class Home extends Component {
 	render() {
 		return(
 			<Row center='xs'>
@@ -35,12 +31,21 @@ export default class Home extends Component {
 					<FacebookLogin 
 						appId="1418273384901709"
 						autoLoad={false}
-						fields="name, email, picture"
+						fields="picture?type=large"
 						scope="public_profile"
-						callback={this.props.handler}
+						callback={(data) => {
+							this.props.handler(data);
+							this.props.history.push('/select');
+						}}
 						textButton="Continua con Facebook"/>
 				</Col>
 			</Row>
 		);
 	}
 }
+
+Home.propTypes = {
+	history: React.PropTypes.object
+}
+
+export default Home;
