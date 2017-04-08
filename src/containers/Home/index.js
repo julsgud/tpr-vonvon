@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'components/FacebookLogin';
 import {Row, Col} from 'react-flexbox-grid';
 
 import styled from 'styled-components';
@@ -29,15 +29,11 @@ class Home extends Component {
 				</Col>
 				<Col>
 					<FacebookLogin 
-						appId="1418273384901709"
-						autoLoad={false}
-						fields="picture?type=large"
-						scope="public_profile"
-						callback={(data) => {
-							this.props.handler(data);
+						infoCallback={this.props.infoHandler}
+						imageCallback={(data) => {
+							this.props.imageHandler(data);
 							this.props.history.push('/select');
-						}}
-						textButton="Continua con Facebook"/>
+						}}/>
 				</Col>
 			</Row>
 		);

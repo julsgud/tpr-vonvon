@@ -13,9 +13,14 @@ const getIsMobile = () => {
 }
 
 class FacebookLogin extends React.Component {
-	static propTypes = {
 
-	};
+	constructor(props) {
+		super(props);
+		this.state = {
+			isSdkLoaded: false,
+			isProcessing: false
+		};
+	}
 
 	static defaultProps = {
 		appId: '1418273384901709',
@@ -28,7 +33,7 @@ class FacebookLogin extends React.Component {
 		cookie: false,
 		reAuthenticate: false,
 		size: 'metro',
-		fields: 'picture?type=large',
+		fields: 'name',
 		version: '2.8',
 		language: 'en_US',
 		disableMobileRedirect: false,
@@ -36,7 +41,7 @@ class FacebookLogin extends React.Component {
 		tag: 'button',
 	};
 
-	state = {
+	static state = {
 		isSdkLoaded: false,
 		isProcessing: false,
 	};
@@ -48,7 +53,7 @@ class FacebookLogin extends React.Component {
 		}
 		this.setFbAsyncInit();
 		this.loadSdkAsynchronously();
-		let fbRoot = document.getElementById('rb-root');
+		let fbRoot = document.getElementById('fb-root');
 		if(!fbRoot) {
 			fbRoot = document.createElement('div');
 			fbRoot.id = 'fb-root';
@@ -61,7 +66,7 @@ class FacebookLogin extends React.Component {
 		this._isMounted = false;
 	}
 
-	setStateIfMounted() {
+	setStateIfMounted(state) {
 		if (this._isMounted) {
 			this.setState(state);
 		}
@@ -69,12 +74,10 @@ class FacebookLogin extends React.Component {
 
 	setFbAsyncInit() {
 		const {appId, xbfml, cookie, version, autoLoad} = this.props;
-		window.FbAsyncInit = () => {
+		window.fbAsyncInit = () => {
 			window.FB.init({
 				version: `v${version}`,
-				appId,
-				xbfml,
-				cookie
+				appId
 			});
 			this.setStateIfMounted({isSdkLoaded: true});
 			if (autoLoad || window.location.search.includes('facebookdirect')) {
@@ -101,21 +104,26 @@ class FacebookLogin extends React.Component {
 	    })(document, 'script', 'facebook-jssdk');
 	}
 
-	responseApi = (authResponse) => {
-		window.Fb.api('/me', { fields: this.props.fields }, (me) => {
+	getInfo = (authResponse) => {
+		window.FB.api('/me', {fields: this.props.fields}, (me) => {
 			Object.assign(me, authResponse);
-			this.props.callback(me);
+			this.props.infoCallback(me);
 		});
 	};
+
+	getLargeProfilePicture(authResponse) {
+		window.FB.api('/me/picture?type=large', (response) => {
+			this.props.imageCallback(response);
+		});
+	}
 
 	checkLoginState = (response) => {
 		this.setStateIfMounted({isProcessing: false});
 		if (response.authResponse) {
-			this.responseApi(response.authResponse);
+			this.getInfo(response.authResponse);
+			this.getLargeProfilePicture(response.authResponse);
 		} else {
-			if (this.props.callback) {
-				this.props.callback({status: response.status});
-			}
+			callback({status: response.status});
 		}
 	};
 
@@ -150,7 +158,7 @@ class FacebookLogin extends React.Component {
 			params.auth_type = 'reauthenticate';
 		}
 
-		if (this.props.isMobile $$ !disableMobileRedirect) {
+		if (this.props.isMobile && !disableMobileRedirect) {
 			window.location.href = `//www.facebook.com/dialog/oauth?${objectToParams(params)}`;
 		} else {
 			window.FB.login(this.checkLoginState, {scope, auth_type: params.auth_type});
@@ -167,3 +175,9 @@ class FacebookLogin extends React.Component {
 		)
 	}
 }
+
+FacebookLogin.propTypes = {
+	picHandler: React.PropTypes.func
+}
+
+export default FacebookLogin;
