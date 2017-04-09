@@ -6,15 +6,18 @@ import styled from 'styled-components';
 import palette from 'palette';
 
 import Clarifai from 'clarifai';
-import P5Wrapper from 'react-p5-wrapper';
+
 
 const Img = styled.img`
 	max-width: 100%;
-	width: 200px;
+	width: 89px;
 `;
 
 const H3 = styled.h3`
 	color: ${palette.black};
+`;
+
+const Canvas = styled.canvas`
 `;
 
 const CLIENT_ID = 'N6O0CX9Q-Wz6rczYvCnh5gfDa5D3ZVS87XMwvJrD';
@@ -34,60 +37,117 @@ class Process extends Component {
 
 	componentWillMount() {
 		const imgUrl = "https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18";
-		return cApp.models.predict("a403429f2ddf4b49b307e318f00e528b", imgUrl)
-			.then((response) => {
-				let x1, x2, y1, y2;
-				let mT, mR, mB, mL;
+		// return cApp.models.predict("a403429f2ddf4b49b307e318f00e528b", imgUrl)
+		// 	.then((response) => {
+		// 		let x1, x2, y1, y2;
+		// 		let mT, mR, mB, mL;
 
-				const box = response.outputs[0].data.regions[0].region_info.bounding_box;
+		// 		const box = response.outputs[0].data.regions[0].region_info.bounding_box;
 
-				x1 = Number(box.top_row) * imageSize;
-				mT = x1 - imageSize;
-				y1 = Number(box.left_col) * imageSize;
-				mL = y1 - imageSize;
-				x2 = Number(box.bottom_row) * imageSize;
-				mB = imageSize - x2;
-				y2 = Number(box.right_col) * imageSize;
-				mR = imageSize - y2;
+		// 		x1 = Number(box.top_row) * imageSize;
+		// 		mT = x1 - imageSize;
+		// 		y1 = Number(box.left_col) * imageSize;
+		// 		mL = y1 - imageSize;
+		// 		x2 = Number(box.bottom_row) * imageSize;
+		// 		mB = imageSize - x2;
+		// 		y2 = Number(box.right_col) * imageSize;
+		// 		mR = imageSize - y2;
 
-				this.setState({margin: {
-					top: mT.toString() + 'px',
-					right: mR.toString() + 'px',
-					bottom: mB.toString() + 'px',
-					left: mL.toString() + 'px'
-				}});
-			});
+		// 		this.setState({margin: {
+		// 			top: mT.toString() + 'px',
+		// 			right: mR.toString() + 'px',
+		// 			bottom: mB.toString() + 'px',
+		// 			left: mL.toString() + 'px'
+		// 		}});
+		// 	});
+	}
+
+	componentDidMount() {
+		// 1. Get element and context
+		const c = document.getElementById("c");
+		const ctx = c.getContext('2d');
+
+		/* 
+			2. Determine canvas width and height
+			Max: 800px as determined in appWrapper css
+			Margin of 5px
+			Use aspect ratio of 16:9
+		*/
+		if (window.innerWidth < 800) {
+			c.width = window.innerWidth - 16;
+			c.height = (c.width*9)/16;
+		} else {
+			c.width = 800;
+			c.height = (c.width*9)/16;
+		}
+
+		const w = c.width;
+		const h = c.height;
+
+		/*
+			3. Determine margins and frame dims
+		*/
+		const xMargin = w/35;
+		const yMargin = h/13;
+		const frameWidth = (w - (xMargin * 4))/3;
+		const frameHeight = h - (yMargin * 2);
+
+		const frame1 = {
+			'x': xMargin,
+			'y': yMargin
+		}
+
+		const frame2 = {
+			'x': (xMargin * 2) + frameWidth,
+			'y': yMargin
+		}
+
+		const frame3 = {
+			'x': (xMargin * 3) + (frameWidth * 2),
+			'y': yMargin
+		}
+
+		/*
+			4. Load, prep and draw images
+		*/
+		// Leftmost
+		const img = new Image();
+		img.onload = function() {
+		    ctx.drawImage(img, frame1.x, frame1.y, frameWidth, frameHeight);
+		};
+		img.src = 'https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18';
+
+
+		const img2 = new Image();
+		img2.onload = function() {
+		    ctx.drawImage(img2, frame2.x, frame2.y, frameWidth, frameHeight);
+		};
+		img2.src = 'https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18';
+
+		const img3 = new Image();
+		img3.onload = () => {
+			console.log(img3.naturalWidth, img3.naturalHeight);
+			ctx.drawImage(img3, frame3.x, frame3.y, frameWidth, frameHeight);
+		}
+		img3.src = 'http://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
 	}
 
 	render() {
 		const imgUrl = "https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18";
-		console.log(this.state.margin);
-		if (!this.state.margin) {
+	
+		if (this.state.margin) {
 			console.log('hey');
 			return (<div> Processing! </div>);
 		} else {
-			console.log(this.state.margin);
 
-			let imgStyle = {
-				width: '200px',
-				height: '200px',
-				overflow: 'hidden',
-				marginTop: this.state.margin.top,
-				marginRight: this.state.margin.right,
-				marginBottom: this.state.margin.bottom,
-				marginLeft: this.state.margin.left
-			};
-			
 			return(
 				<Row center='xs'>
 					<Col xs={12}>
 						<H3> Here we go </H3>
-						<Img id="i" src={imgUrl}></Img>
 						<br></br>
-						<Img id="i2" style={imgStyle} src={imgUrl}></Img>
 					</Col>
 					<Col xs={12}>
-						<P5Wrapper sketch={sketch}/>
+						<Canvas id="c"></Canvas>
 					</Col>
 				</Row>
 			);
