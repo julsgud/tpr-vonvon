@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import palette from 'palette';
 
 import Clarifai from 'clarifai';
+import P5Wrapper from 'react-p5-wrapper';
 
 const Img = styled.img`
 	max-width: 100%;
@@ -86,8 +87,7 @@ class Process extends Component {
 						<Img id="i2" style={imgStyle} src={imgUrl}></Img>
 					</Col>
 					<Col xs={12}>
-						<div id="c"></div>
-
+						<P5Wrapper sketch={sketch}/>
 					</Col>
 				</Row>
 			);
