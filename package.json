@@ -10,6 +10,7 @@
     "dev": "webpack-dev-server --hot --inline --history-api-fallback"
   },
   "dependencies": {
+    "clarifai": "^2.1.5",
     "eslint-loader": "^1.7.0",
     "html-webpack-plugin": "^2.28.0",
     "path": "^0.12.7",
