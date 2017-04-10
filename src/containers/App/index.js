@@ -68,7 +68,7 @@ class App extends Component {
 									history={history}/>
 							}/>
 							<Route exact path='/process' render={({history}) => 
-								<Process image={this.state.selectedImage}/>
+								<Process image={this.state.selectedImage} user={this.state.userInfo}/>
 							}/>
 						</div>
 					<Footer/>
