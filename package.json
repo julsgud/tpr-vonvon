@@ -10,6 +10,7 @@
     "dev": "webpack-dev-server --hot --inline --history-api-fallback"
   },
   "dependencies": {
+    "axios": "^0.16.1",
     "clarifai": "^2.1.5",
     "clmtrackr": "^1.0.1",
     "eslint-loader": "^1.7.0",
