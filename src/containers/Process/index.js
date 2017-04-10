@@ -6,11 +6,11 @@ import styled from 'styled-components';
 import palette from 'palette';
 
 import Clarifai from 'clarifai';
+import clm from 'clmtrackr/clmtrackr.js';
+import pModel from 'clmtrackr/models/model_pca_20_svm.js';
 
 
 const Img = styled.img`
-	max-width: 100%;
-	width: 89px;
 `;
 
 const H3 = styled.h3`
@@ -32,7 +32,7 @@ class Process extends Component {
 		super();
 		this.state = {
 			margin: null
-		}
+		};
 	}
 
 	componentWillMount() {
@@ -63,9 +63,18 @@ class Process extends Component {
 	}
 
 	componentDidMount() {
-		// 1. Get element and context
-		const c = document.getElementById("c");
+		/*
+			1.Get canvas element and context
+			Initialize trackr
+			Get image element
+		*/
+		const c = document.getElementById('c');
 		const ctx = c.getContext('2d');
+
+		const tracker = new clm.tracker();
+		tracker.init(pModel);
+
+		const i = document.getElementById('i');
 
 		/* 
 			2. Determine canvas width and height
@@ -111,12 +120,12 @@ class Process extends Component {
 			4. Load, prep and draw images
 		*/
 		// Leftmost
-		const img = new Image();
+		const img = document.createElement('img');
 		img.onload = function() {
 		    ctx.drawImage(img, frame1.x, frame1.y, frameWidth, frameHeight);
 		};
+		img.crossOrigin='Anonymous';
 		img.src = 'https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18';
-
 
 		const img2 = new Image();
 		img2.onload = function() {
@@ -133,7 +142,7 @@ class Process extends Component {
 	}
 
 	render() {
-		const imgUrl = "https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18";
+		const imgUrl = 'https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18';
 	
 		if (this.state.margin) {
 			console.log('hey');
