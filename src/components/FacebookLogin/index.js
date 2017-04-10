@@ -81,7 +81,7 @@ class FacebookLogin extends React.Component {
 			});
 			this.setStateIfMounted({isSdkLoaded: true});
 			if (autoLoad || window.location.search.includes('facebookdirect')) {
-				window.FB.getLoginStatus(this.checkLoginAfterRefresh);
+				// window.FB.getLoginStatus(this.checkLoginAfterRefresh);
 			}
 		};
 	}

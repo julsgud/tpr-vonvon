@@ -9,6 +9,7 @@ import Footer from 'components/Footer';
 import Home from 'containers/Home';
 import Select from 'containers/Select';
 import Process from 'containers/Process';
+import Privacy from 'containers/Privacy';
 
 const AppWrapper = styled.div`
 	font-family: 'Open Sans', sans-serif;
@@ -70,6 +71,7 @@ class App extends Component {
 							<Route exact path='/process' render={({history}) => 
 								<Process image={this.state.selectedImage} user={this.state.userInfo}/>
 							}/>
+							<Route exact path='privacy' component={Privacy}/>
 						</div>
 					<Footer/>
 				</AppWrapper>
