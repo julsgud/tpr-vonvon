@@ -1287,6 +1287,10 @@ cliui@^3.2.0:
     strip-ansi "^3.0.1"
     wrap-ansi "^2.0.0"
 
+clmtrackr@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/clmtrackr/-/clmtrackr-1.0.1.tgz#709a8af7cac29533cc6509b58d2f1c9341fa62cc"
+
 clone@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.2.tgz#260b7a99ebb1edfe247538175f783243cb19d149"
