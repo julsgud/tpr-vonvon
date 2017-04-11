@@ -15,6 +15,10 @@ const H3 = styled.h3`
 `;
 
 class Home extends Component {
+	componentDidMount() {
+		console.log('** 2 ** : Mounted Home Route');
+	}
+
 	render() {
 		return(
 			<Row center='xs'>

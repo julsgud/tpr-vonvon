@@ -22,6 +22,10 @@ const AppWrapper = styled.div`
 `;
 
 class App extends Component {
+	componentWillMount() {
+		console.log('** 1 ** : Mounted App Component');
+	}
+
 	constructor() {
 		super();
 		this.state = {
