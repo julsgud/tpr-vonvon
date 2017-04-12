@@ -32,12 +32,12 @@ class Home extends Component {
 					<p> Averigualo ahora! </p>
 				</Col>
 				<Col>
-					<FacebookLogin 
+					{/*<FacebookLogin 
 						infoCallback={this.props.infoHandler}
 						imageCallback={(data) => {
 							this.props.imageHandler(data);
 							this.props.history.push('/select');
-						}}/>
+						}}/>*/}
 				</Col>
 			</Row>
 		);
