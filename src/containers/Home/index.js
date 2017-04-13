@@ -21,47 +21,26 @@ class Home extends Component {
 
 	render() {
 		return(
-			<div>
-				<div>
+			<Row center='xs'>
+				<Col xs={12}>
 					<Img src="https://res.cloudinary.com/julsgc/image/upload/v1491106020/Boletia_995x380__2_fqawa8.png"/>
-				</div>
-				<div>
+				</Col>
+				<Col xs={12}>
 					<h3> A que Ser Extraordinario te pareces!? </h3>
-				</div>
-				<div>
+				</Col>
+				<Col xs={12}>
 					<p> Averigualo ahora! </p>
-				</div>
-				<div>
+				</Col>
+				<Col>
 					<FacebookLogin 
 						infoCallback={this.props.infoHandler}
 						imageCallback={(data) => {
 							this.props.imageHandler(data);
 							this.props.history.push('/select');
 						}}/>
-				</div>
-			</div>
+				</Col>
+			</Row>
 		);
-		// return(
-		// 	<Row center='xs'>
-		// 		<Col xs={12}>
-		// 			<Img src="https://res.cloudinary.com/julsgc/image/upload/v1491106020/Boletia_995x380__2_fqawa8.png"/>
-		// 		</Col>
-		// 		<Col xs={12}>
-		// 			<h3> A que Ser Extraordinario te pareces!? </h3>
-		// 		</Col>
-		// 		<Col xs={12}>
-		// 			<p> Averigualo ahora! </p>
-		// 		</Col>
-		// 		<Col>
-		// 			<FacebookLogin 
-		// 				infoCallback={this.props.infoHandler}
-		// 				imageCallback={(data) => {
-		// 					this.props.imageHandler(data);
-		// 					this.props.history.push('/select');
-		// 				}}/>
-		// 		</Col>
-		// 	</Row>
-		// );
 	}
 }
 

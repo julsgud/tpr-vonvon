@@ -123,7 +123,7 @@ class FacebookLogin extends React.Component {
 			this.getInfo(response.authResponse);
 			this.getLargeProfilePicture(response.authResponse);
 		} else {
-			callback({status: response.status});
+			console.log({status: response.status});
 		}
 	};
 
