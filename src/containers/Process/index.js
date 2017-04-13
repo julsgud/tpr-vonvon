@@ -116,14 +116,14 @@ class Process extends Component {
 			ctx.globalAlpha = 0.5;
 			ctx.drawImage(img3, frame2.x, frame2.y, frameWidth, frameHeight);
 		}
-		img3.src = 'http://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
+		img3.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
 
 		const img4 = new Image();
 		img4.onload = () => {
 			ctx.globalAlpha = 1;
 			ctx.drawImage(img4, frame3.x, frame3.y, frameWidth, frameHeight);
 		}
-		img4.src = 'http://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
+		img4.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
 	}
 
 	render() {
