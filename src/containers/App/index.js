@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {HashRouter as Router, Route, Link} from 'react-router-dom';
-
 import styled from 'styled-components';
+
+import {loadState, saveState} from 'localStorage.js';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
@@ -22,16 +23,18 @@ const AppWrapper = styled.div`
 `;
 
 class App extends Component {
-	componentWillMount() {
-		console.log('** 1 ** : Mounted App Component');
-	}
-
 	constructor() {
 		super();
-		this.state = {
-			userInfo: null,
-			userImage: null
-		};
+		if (!loadState()) {
+			this.state = loadState();
+			console.log(this.state);
+		} else {
+			this.state = {
+				userInfo: null,
+				userImage: null,
+				selectedImage: null,
+			};
+		}
 		this.handleUserInfo = this.handleUserInfo.bind(this);
 		this.handleImage = this.handleImage.bind(this);
 		this.handleSelectedImage = this.handleSelectedImage.bind(this);
@@ -39,20 +42,27 @@ class App extends Component {
 
 	handleUserInfo(data) {
 		let userInfo = data;
-		this.setState({userInfo: userInfo});
-		console.log(data);
+		this.setState({userInfo: userInfo}, saveState(this.state));
+		console.log(this.state);
 	}
 
 	handleImage(data) {
 		let image = data;
-		this.setState({userImage: image});
-		console.log(image);
+		this.setState({userImage: image}, saveState(this.state));
+		console.log(this.state);
 	}
 
 	handleSelectedImage(data) {
-		let selectedImage = data;
-		this.setState({selectedImage: selectedImage});
-		console.log(selectedImage);
+		let image = {url: data};
+		console.log(image);
+		this.setState({selectedImage: image}, () => {
+			if (this.state.selectedImage) {
+				saveState(this.state);
+			} else {
+				this.setState({selectedImage: image}, saveState(this.state));
+			}
+		});
+		console.log(this.state);
 	}
 
 	render() {

@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import ImageButton from 'components/ImageButton';
+
 import {Row, Col} from 'react-flexbox-grid';
 
 import styled from 'styled-components';
@@ -15,6 +17,12 @@ const H3 = styled.h3`
 `;
 
 class Select extends Component {
+	constructor(props) {
+		super(props);
+
+	}
+
+
 	getFirstName(name) {
 		let str = name;
 		let s;
@@ -31,12 +39,13 @@ class Select extends Component {
 					<H3> Hey {this.getFirstName(this.props.info.name)}, escoge una foto! </H3>
 				</Col>
 				<Col xs={12}>
-					<button onClick={() => {
-						this.props.selectionHandler(this.props.image.data.url);
-						this.props.history.push('/process');
-					}}>
-						<Img src={this.props.image.data.url}></Img>
-					</button>
+					<ImageButton 
+						img={this.props.image.data.url} 
+						selectionCallback={(data) => {
+							this.props.selectionHandler(data);
+							// this.props.history.push('/process');
+						}}
+					/>
 				</Col>
 			</Row>
 		);
