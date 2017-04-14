@@ -27,7 +27,6 @@ class Process extends Component {
 	}
 
 	componentWillMount() {
-		
 		return axios({
 			method: 'post',
 			url: 'https://api.kairos.com/detect',
@@ -130,7 +129,6 @@ class Process extends Component {
 		const imgUrl = 'https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18';
 	
 		if (!this.state.imageInfo) {
-			console.log('hey');
 			return (<div> Processing! </div>);
 		} else {
 
