@@ -12,6 +12,14 @@ const getIsMobile = () => {
 	return isMobile;
 }
 
+const flatten = (o) => {
+	let result = Object.create(o);
+	for (let key in result) {
+		result[key] = result[key];
+	}
+	return result;
+}
+
 class FacebookLogin extends React.Component {
 
 	constructor(props) {
@@ -28,7 +36,7 @@ class FacebookLogin extends React.Component {
 		textButton: 'Continua con Facebook',
 		typeButton: 'button',
 		redirectUri: typeof window !== 'undefined' ? window.location.href : '/',
-		scope: 'public_profile',
+		scope: 'public_profile, user_photos',
 		xfbml: false,
 		cookie: false,
 		reAuthenticate: false,
@@ -105,23 +113,68 @@ class FacebookLogin extends React.Component {
 	}
 
 	getInfo = (authResponse) => {
-		window.FB.api('/me', {fields: this.props.fields}, (me) => {
+		return window.FB.api('/me', {fields: this.props.fields}, (me) => {
 			Object.assign(me, authResponse);
-			this.props.infoCallback(me);
+			return this.props.infoCallback(me);
 		});
 	};
 
-	getLargeProfilePicture(authResponse) {
-		window.FB.api('/me/picture?type=large', (response) => {
-			this.props.imageCallback(response);
+	getAlbums(authResponse) {
+		let albumId;
+
+		return window.FB.api('/me/albums', (response) => {
+			response.data.forEach((a) => {
+				if (a.name === "Profile Pictures") {
+					albumId = a.id;
+				};
+			});
+			return this.getProfilePictureAlbum(albumId);
 		});
+	}
+
+	getProfilePictureAlbum(id) {
+		let images = [];
+
+		return window.FB.api('/' + id + '/photos', (response) => {
+			response.data.forEach((i) => {
+				images.push(i.id);
+			});
+			return this.props.imageCallback(images);
+		});
+	}
+
+	getProfilePictures(images) {
+		let collection = {};
+		let coll;
+		let fields = 'images';
+		let counter = 0;
+
+		return images.forEach((i) => {
+			window.FB.api('/' + i + '?fields=' + fields, (response) => {
+				collection['image-'+counter.toString()] = response;
+				console.log(response.images);
+				console.log(collection['image-'+counter]);
+				counter++; 
+			});
+		});
+		let o = flatten(collection);
+		console.log(collection);
+		console.log(collection['0']);
+		console.log(collection[0]);
+		console.log(Object.getOwnPropertyNames(collection));
+
+		console.log(o);
+		console.log(o['0']);
+		console.log(o[0]);
+		console.log(Object.getOwnPropertyNames(o));
+		return this.props.imageCallback(collection);
 	}
 
 	checkLoginState = (response) => {
 		this.setStateIfMounted({isProcessing: false});
 		if (response.authResponse) {
 			this.getInfo(response.authResponse);
-			this.getLargeProfilePicture(response.authResponse);
+			this.getAlbums(response.authResponse);
 		} else {
 			console.log({status: response.status});
 		}

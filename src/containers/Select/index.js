@@ -19,9 +19,11 @@ const H3 = styled.h3`
 class Select extends Component {
 	constructor(props) {
 		super(props);
-
 	}
 
+	componentWillMount() {
+
+	}
 
 	getFirstName(name) {
 		let str = name;
@@ -32,20 +34,25 @@ class Select extends Component {
 		return s;
 	}
 
+	handleClick(data) {
+		this.props.selectionHandler(data);
+		// this.props.history.push('/process');
+	}
+
 	render() {
+		let imageButtons = [];
+
+		// for (let i = 0; i < this.props.images.length; i++) {
+		// 	imageButtons.push(<ImageButton src={this.props.images[i][0].source} selectionCallback={this.handleClick}/>);
+		// }
+
 		return(
 			<Row center='xs'>
 				<Col xs={12}>
 					<H3> Hey {this.getFirstName(this.props.info.name)}, escoge una foto! </H3>
 				</Col>
-				<Col xs={12}>
-					<ImageButton 
-						img={this.props.image.data.url} 
-						selectionCallback={(data) => {
-							this.props.selectionHandler(data);
-							// this.props.history.push('/process');
-						}}
-					/>
+				<Col>
+					{imageButtons}
 				</Col>
 			</Row>
 		);
