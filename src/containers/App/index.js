@@ -25,13 +25,13 @@ const AppWrapper = styled.div`
 class App extends Component {
 	constructor() {
 		super();
-		if (!loadState()) {
+		if (loadState()) {
 			this.state = loadState();
-			console.log(this.state);
+			// console.log(this.state);
 		} else {
 			this.state = {
 				userInfo: null,
-				userImage: null,
+				userImages: null,
 				selectedImage: null,
 			};
 		}
@@ -42,25 +42,23 @@ class App extends Component {
 
 	handleUserInfo(data) {
 		let userInfo = data;
-		this.setState({userInfo: userInfo}, saveState(this.state));
-		console.log(this.state);
+		this.setState({userInfo: userInfo}, () => {
+			saveState(this.state)
+		});
 	}
 
 	handleImage(data) {
-		let image = data;
-		this.setState({userImage: image}, saveState(this.state));
+		let images = data;
+		this.setState({userImages: images}, () => {
+			saveState(this.state);
+		});
 		console.log(this.state);
 	}
 
 	handleSelectedImage(data) {
 		let image = {url: data};
-		console.log(image);
 		this.setState({selectedImage: image}, () => {
-			if (this.state.selectedImage) {
-				saveState(this.state);
-			} else {
-				this.setState({selectedImage: image}, saveState(this.state));
-			}
+			saveState(this.state)
 		});
 		console.log(this.state);
 	}
@@ -78,7 +76,7 @@ class App extends Component {
 							}/>
 							<Route exact path='/select' render={({history}) =>
 								<Select info={this.state.userInfo} 
-									image={this.state.userImage}
+									images={this.state.userImages}
 									selectionHandler={this.handleSelectedImage}
 									history={history}/>
 							}/>

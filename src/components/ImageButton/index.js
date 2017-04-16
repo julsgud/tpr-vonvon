@@ -14,7 +14,7 @@ class ImageButton extends React.Component {
 
 	render() {
 		return(
-			<Col>
+			<Col>x
 				<button onClick={this.handleClick}>
 					<img src={this.props.img}></img>
 				</button>
