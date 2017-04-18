@@ -27,6 +27,8 @@ class Select extends Component {
 			spinner: true,
 			loading: false
 		}
+
+		this.handleClick = this.handleClick.bind(this);
 	}
 
 	componentDidMount() {
@@ -76,24 +78,7 @@ class Select extends Component {
 
 	handleClick(data) {
 		this.props.selectionHandler(data);
-		// this.props.history.push('/process');
-	}
-
-	getImageThumbnailUrl(index) {
-		let url;
-
-		// 1. retrieve current image object
-		let img = this.state.images[index];
-
-		// 2. find ~200px image in images array
-		for (let i = 0; i < img.images.length; i++) {
-			if (img.images[i].height <= 200 || img.images[i].width <= 200) {
-				url = img.images[i].source;
-				break;
-			}
- 		}
-		
-		return url;
+		this.props.history.push('/process');
 	}
 
 	render() {
@@ -110,7 +95,7 @@ class Select extends Component {
 		} else {
 
 			for (let i = 0; i < this.state.images.length; i++) {
-				imageButtons.push(<ImageButton key={i.toString()} index={i} src={this.getImageThumbnailUrl(i)} selectionCallback={this.handleClick}/>);
+				imageButtons.push(<ImageButton key={i.toString()} img={this.state.images[i]} selectionCallback={this.handleClick}/>);
 			};
 
 			return(

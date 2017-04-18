@@ -46,6 +46,10 @@ class Process extends Component {
 		});
 	}
 
+	componentDidMount() {
+		
+	}
+
 	componentDidUpdate() {
 		/*
 			1.Get canvas element and context
@@ -61,6 +65,7 @@ class Process extends Component {
 			Use aspect ratio of 16:9
 		*/
 		if (window.innerWidth < 800) {
+
 			c.width = window.innerWidth - 16;
 			c.height = (c.width*9)/16;
 		} else {
@@ -70,6 +75,8 @@ class Process extends Component {
 
 		const w = c.width;
 		const h = c.height;
+
+		console.log('window: ' + window.innerWidth + 'px ** canvas: ' + c.width + 'px');
 
 		/*
 			3. Determine margins and frame dims
@@ -125,6 +132,15 @@ class Process extends Component {
 		img4.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
 	}
 
+	getFirstName(name) {
+		let str = name;
+		let s;
+
+		s = str.substr(0, str.indexOf(' '));
+
+		return s;
+	}
+
 	render() {
 		const imgUrl = 'https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18';
 	
@@ -135,7 +151,7 @@ class Process extends Component {
 			return(
 				<Row center='xs'>
 					<Col xs={12}>
-						<H3> {this.props.user.name}, Te pareces al Rey Extraordinario! </H3>
+						<H3> {this.getFirstName(this.props.user.name)}, te pareces al Rey Extraordinario! </H3>
 						<br></br>
 					</Col>
 					<Col xs={12}>
