@@ -47,7 +47,7 @@ class App extends Component {
 		}
 
 		this.handleUserInfo = this.handleUserInfo.bind(this);
-		this.handleImage = this.handleImage.bind(this);
+		this.handleImages = this.handleImages.bind(this);
 		this.handleSelectedImage = this.handleSelectedImage.bind(this);
 	}
 
@@ -121,7 +121,7 @@ class App extends Component {
 		console.log('* User info updated *');
 	}
 
-	handleImage(data) {
+	handleImages(data) {
 		let images = data;
 		let newState = update(this.state, {
 			user: {images: {$set: images}}
@@ -134,7 +134,10 @@ class App extends Component {
 
 	handleSelectedImage(data) {
 		let selection = data;
-		this.setState({user: {selection: selection}}, () => {
+		let newState = update(this.state, {
+			user: {selection: {$set: selection}}
+		});
+		this.setState(newState, () => {
 			saveState(this.state.user);
 		});
 		console.log('* User selection updated *');
@@ -148,7 +151,7 @@ class App extends Component {
 						<div>
 							<Route exact path='/' render={({history}) => 
 								<Home infoHandler={this.handleUserInfo} 
-									imageHandler={this.handleImage} 
+									imageHandler={this.handleImages} 
 									history={history}/>
 							}/>
 							<Route exact path='/select' render={({history}) =>
