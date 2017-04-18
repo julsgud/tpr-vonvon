@@ -79,20 +79,25 @@ class Select extends Component {
 		// this.props.history.push('/process');
 	}
 
-	getImageThumbnail(images) {
+	getImageThumbnailUrl(index) {
 		let url;
-		
-		
+
+		// 1. retrieve current image object
+		let img = this.state.images[index];
+
+		// 2. find ~200px image in images array
+		for (let i = 0; i < img.images.length; i++) {
+			if (img.images[i].height <= 200 || img.images[i].width <= 200) {
+				url = img.images[i].source;
+				break;
+			}
+ 		}
 		
 		return url;
 	}
 
 	render() {
 		let imageButtons = [];
-
-		for (let i = 0; i < this.state.images.length; i++) {
-			// imageButtons.push(<ImageButton src={this.props.images[i][0].source} selectionCallback={this.handleClick}/>);
-		}
 
 		if (this.state.spinner) {
 			return(
@@ -103,14 +108,19 @@ class Select extends Component {
 				</Row>
 			);
 		} else {
+
+			for (let i = 0; i < this.state.images.length; i++) {
+				imageButtons.push(<ImageButton key={i.toString()} index={i} src={this.getImageThumbnailUrl(i)} selectionCallback={this.handleClick}/>);
+			};
+
 			return(
 				<Row center='xs'>
 					<Col xs={12}>
-						<H3> Hey {this.getFirstName(this.props.info.name)}, escoge una foto! </H3>
+						<H3> Hey {this.getFirstName(this.props.info.name)}, escoge una foto donde se vea tu cara! </H3>
 					</Col>
-					<Col>
+					<Row around='xs' middle='xs'>
 						{imageButtons}
-					</Col>
+					</Row>
 				</Row>
 			);
 		}
