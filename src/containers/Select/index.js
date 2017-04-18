@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import update from 'react-addons-update';
 
 import ImageButton from 'components/ImageButton';
 
@@ -23,30 +23,46 @@ class Select extends Component {
 		super(props);
 
 		this.state = {
-			images: null,
-			loading: true
+			images: [],
+			spinner: true,
+			loading: false
 		}
 	}
 
 	componentDidMount() {
-		for (let i = 0; i < this.props.images.length; i++) {
-			return this.getImage(i);
+		console.log('** 2 **: Mounted Select Component');
+		this.requestImages();
+	}
+
+	componentDidUpdate() {
+		this.requestImages();
+	}
+
+	requestImages() {
+		if (this.props.ready && !this.state.loading) {
+			this.setState({loading: true});
+			for (let i = 0; i < this.props.images.length; i++) {
+				this.getImage(i);
+			}
 		}
-		this.state.loading = false;
 	}
 
 	getImage(i) {
-		// return axios({
-		// 	method: 'get',
-		// 	url: 'https://graph.facebook.com/v2.8/' + this.props.images[i] + 'fields?=images&access_token=' + this.props.info.accessToken,
-		// }).then((response) => {
-		// 	console.log(response);
-		// 	images[i]= {data: response}
-		// 	return response;
-		// });
 		return window.FB.api('/' + this.props.images[i] + '?fields=images', (response) => {
-			console.log(response);
-		});
+			// console.log(response);
+			let newState = update(this.state, {
+				images: {$push: [response]}
+			});
+			this.setState(newState);
+			if (this.state.images.length == this.props.images.length) {
+				this.loadedAllImages();
+			}
+		}, {access_token: this.props.info.accessToken});
+	}
+
+	loadedAllImages() {
+		this.setState({spinner: false});
+		console.log('** loaded all images **');
 	}
 
 	getFirstName(name) {
@@ -63,13 +79,22 @@ class Select extends Component {
 		// this.props.history.push('/process');
 	}
 
+	getImageThumbnail(images) {
+		let url;
+		
+		
+		
+		return url;
+	}
+
 	render() {
 		let imageButtons = [];
 
-		// for (let i = 0; i < this.props.images.length; i++) {
-		// 	imageButtons.push(<ImageButton src={this.props.images[i][0].source} selectionCallback={this.handleClick}/>);
-		// }
-		if (this.state.loading) {
+		for (let i = 0; i < this.state.images.length; i++) {
+			// imageButtons.push(<ImageButton src={this.props.images[i][0].source} selectionCallback={this.handleClick}/>);
+		}
+
+		if (this.state.spinner) {
 			return(
 				<Row center='xs'>
 					<Col>

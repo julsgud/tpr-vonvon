@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {HashRouter as Router, Route, Link} from 'react-router-dom';
+import update from 'react-addons-update';
 import styled from 'styled-components';
 
 import {loadState, saveState} from 'localStorage.js';
@@ -25,42 +26,118 @@ const AppWrapper = styled.div`
 class App extends Component {
 	constructor() {
 		super();
+
 		if (loadState()) {
-			this.state = loadState();
-			// console.log(this.state);
+			let user = loadState();
+			this.state = {
+				user: user,
+				isSdkLoaded: false
+			}
+			console.log('** 0 **: State Reloaded');
+			// console.log(this.state.user);
 		} else {
 			this.state = {
-				userInfo: null,
-				userImages: null,
-				selectedImage: null,
+				user: {
+					info: null,
+					images: null,
+					selection: null
+				},
+				isSdkLoaded: false,
 			};
 		}
+
 		this.handleUserInfo = this.handleUserInfo.bind(this);
 		this.handleImage = this.handleImage.bind(this);
 		this.handleSelectedImage = this.handleSelectedImage.bind(this);
 	}
 
+	componentWillMount() {
+		if (document.getElementById('facebook-jssdk')) {
+			this.sdkLoaded();
+			return;
+		}
+		this.setFbAsyncInit();
+		this.loadSdkAsynchronously();
+		let fbRoot = document.getElementById('fb-root');
+		if (!fbRoot) {
+			fbRoot = document.createElement('div');
+			fbRoot.id = 'fb-root';
+			document.body.appendChild(fbRoot);
+		}
+	}
+
+	setFbAsyncInit() {
+		const appId = '1418273384901709';
+		window.fbAsyncInit = () => {
+			window.FB.init({
+				version: '2.8',
+				appId
+			});
+			this.sdkLoaded();
+			window.FB.getLoginStatus(this.checkLoginAfterRefresh);
+			};
+		}
+
+	checkLoginAfterRefresh(response) {
+		if (response.status === 'connected') {
+			console.log('** connected to FB **');
+		} else {
+			// redirect to home for reconnection
+			// window.FB.login((loginResponse) => {
+			// 	console.log(loginResponse);
+			// });
+		}
+	}
+
+	loadSdkAsynchronously() {
+		((d, s, id) => {
+	      const element = d.getElementsByTagName(s)[0];
+	      const fjs = element;
+	      let js = element;
+	      if (d.getElementById(id)) { return; }
+	      js = d.createElement(s); js.id = id;
+	      js.src = `//connect.facebook.net/en_US/all.js`;
+	      fjs.parentNode.insertBefore(js, fjs);
+	    })(document, 'script', 'facebook-jssdk');
+	}
+
+	sdkLoaded() {
+		this.setState({isSdkLoaded: true});
+		console.log('** fb-sdk loaded ** ');
+	}
+
+	componentDidMount() {
+		console.log('** 1 **: Mounted App Component');
+	}
+
 	handleUserInfo(data) {
-		let userInfo = data;
-		this.setState({userInfo: userInfo}, () => {
-			saveState(this.state)
+		let info = data;
+		let newState = update(this.state, {
+			user: {info: {$set: info}}
 		});
+		this.setState(newState, () => {
+			saveState(this.state.user);
+		});
+		console.log('* User info updated *');
 	}
 
 	handleImage(data) {
 		let images = data;
-		this.setState({userImages: images}, () => {
-			saveState(this.state);
+		let newState = update(this.state, {
+			user: {images: {$set: images}}
 		});
-		console.log(this.state);
+		this.setState(newState, () => {
+			saveState(this.state.user);
+		});
+		console.log('* User images updated *');
 	}
 
 	handleSelectedImage(data) {
-		let image = {url: data};
-		this.setState({selectedImage: image}, () => {
-			saveState(this.state)
+		let selection = data;
+		this.setState({user: {selection: selection}}, () => {
+			saveState(this.state.user);
 		});
-		console.log(this.state);
+		console.log('* User selection updated *');
 	}
 
 	render() {
@@ -75,13 +152,15 @@ class App extends Component {
 									history={history}/>
 							}/>
 							<Route exact path='/select' render={({history}) =>
-								<Select info={this.state.userInfo} 
-									images={this.state.userImages}
+								<Select 
+									ready={this.state.isSdkLoaded}
+									info={this.state.user.info} 
+									images={this.state.user.images}
 									selectionHandler={this.handleSelectedImage}
 									history={history}/>
 							}/>
 							<Route exact path='/process' render={({history}) => 
-								<Process image={this.state.selectedImage} user={this.state.userInfo}/>
+								<Process image={this.state.user.selection} user={this.state.user.info}/>
 							}/>
 							<Route exact path='privacy' component={Privacy}/>
 						</div>

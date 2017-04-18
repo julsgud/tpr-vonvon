@@ -12,20 +12,12 @@ const getIsMobile = () => {
 	return isMobile;
 }
 
-const flatten = (o) => {
-	let result = Object.create(o);
-	for (let key in result) {
-		result[key] = result[key];
-	}
-	return result;
-}
-
 class FacebookLogin extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			isSdkLoaded: false,
+			isSdkLoaded: true,
 			isProcessing: false
 		};
 	}
@@ -46,31 +38,28 @@ class FacebookLogin extends React.Component {
 		language: 'en_US',
 		disableMobileRedirect: false,
 		isMobile: getIsMobile(), 
-
-
-		
 		tag: 'button',
 	};
 
 	static state = {
-		isSdkLoaded: false,
+		isSdkLoaded: true,
 		isProcessing: false,
 	};
 
 	componentDidMount() {
-		if (document.getElementById('facebook-jssdk')) {
-			this.sdkLoaded();
-			return;
-		}
-		this.setFbAsyncInit();
-		this.loadSdkAsynchronously();
-		let fbRoot = document.getElementById('fb-root');
-		if(!fbRoot) {
-			fbRoot = document.createElement('div');
-			fbRoot.id = 'fb-root';
-			document.body.appendChild(fbRoot);
-		}
-		this._isMounted = true;
+		// if (document.getElementById('facebook-jssdk')) {
+		// 	this.sdkLoaded();
+		// 	return;
+		// }
+		// this.setFbAsyncInit();
+		// this.loadSdkAsynchronously();
+		// let fbRoot = document.getElementById('fb-root');
+		// if(!fbRoot) {
+		// 	fbRoot = document.createElement('div');
+		// 	fbRoot.id = 'fb-root';
+		// 	document.body.appendChild(fbRoot);
+		// }
+		// this._isMounted = true;
 	}
 
 	componentWillUnmount() {
@@ -160,16 +149,7 @@ class FacebookLogin extends React.Component {
 				counter++; 
 			});
 		});
-		let o = flatten(collection);
-		console.log(collection);
-		console.log(collection['0']);
-		console.log(collection[0]);
-		console.log(Object.getOwnPropertyNames(collection));
-
-		console.log(o);
-		console.log(o['0']);
-		console.log(o[0]);
-		console.log(Object.getOwnPropertyNames(o));
+		
 		return this.props.imageCallback(collection);
 	}
 

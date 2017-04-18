@@ -15,6 +15,10 @@ const H3 = styled.h3`
 `;
 
 class Home extends Component {
+	componentDidMount() {
+		console.log('** 2 **: Mounted Home Component');
+	}
+
 	render() {
 		return(
 			<Row center='xs'>
