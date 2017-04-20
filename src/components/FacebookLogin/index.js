@@ -1,5 +1,22 @@
 import React, {PropTypes} from 'react';
 
+import styled from 'styled-components';
+
+import palette from 'palette';
+
+const Button = styled.button`
+	background: #2d41a3;
+	color: #fff;
+	font-size: 18px;
+	width: 100%;
+	margin: 10px 20px 10px 0px;
+	border: 0px;
+	text-align: center;
+	line-height: 50px;
+	white-space: nowrap;
+	/*border-radius: 5px;*/
+`;
+
 const getIsMobile = () => {
 	let isMobile = false;
 
@@ -38,7 +55,7 @@ class FacebookLogin extends React.Component {
 		language: 'en_US',
 		disableMobileRedirect: false,
 		isMobile: getIsMobile(), 
-		tag: 'button',
+		tag: 'Button',
 	};
 
 	static state = {
@@ -205,9 +222,9 @@ class FacebookLogin extends React.Component {
 		const {typeButton, textButton} = this.props;
 
 		return (
-			<this.props.tag type={typeButton} onClick={this.click}>
+			<Button type={typeButton} onClick={this.click}>
 				{textButton}
-			</this.props.tag>
+			</Button>
 		)
 	}
 }
