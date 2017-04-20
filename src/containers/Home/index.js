@@ -21,7 +21,7 @@ class Home extends Component {
 
 	render() {
 		return(
-			<Row center='xs'>
+			<Row center='xs' around='xs' middle='xs'>
 				<Col xs={12}>
 					<Img src="https://res.cloudinary.com/julsgc/image/upload/v1491106020/Boletia_995x380__2_fqawa8.png"/>
 				</Col>
@@ -47,5 +47,6 @@ class Home extends Component {
 Home.propTypes = {
 	history: React.PropTypes.object
 }
+
 
 export default Home;

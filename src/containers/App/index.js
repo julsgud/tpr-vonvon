@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {HashRouter as Router, Route, Link} from 'react-router-dom';
-import update from 'react-addons-update';
+import update from 'immutability-helper';
 import styled from 'styled-components';
 
 import {loadState, saveState} from 'localStorage.js';
@@ -17,6 +17,7 @@ const AppWrapper = styled.div`
 	font-family: 'Open Sans', sans-serif;
 	width: 100%;
 	max-width: calc(768px + 16px * 2);
+	min-height: 100%;
   	margin: 0 auto;
   	display: flex;
   	height: 100%;
@@ -43,12 +44,14 @@ class App extends Component {
 					selection: null
 				},
 				isSdkLoaded: false,
+				errorMessage: null
 			};
 		}
 
 		this.handleUserInfo = this.handleUserInfo.bind(this);
 		this.handleImages = this.handleImages.bind(this);
 		this.handleSelectedImage = this.handleSelectedImage.bind(this);
+		this.handleError = this.handleError.bind(this);
 	}
 
 	componentWillMount() {
@@ -143,6 +146,14 @@ class App extends Component {
 		console.log('* User selection updated *');
 	}
 
+	handleError(data) {
+		let error = data;
+		let newState = update(this.state, {
+			errorMessage: {$set: error}
+		});
+		this.setState(newState);
+	}
+
 	render() {
 		return (
 			<Router>
@@ -159,11 +170,17 @@ class App extends Component {
 									ready={this.state.isSdkLoaded}
 									info={this.state.user.info} 
 									images={this.state.user.images}
+									errorMessage={this.state.errorMessage}
 									selectionHandler={this.handleSelectedImage}
 									history={history}/>
 							}/>
 							<Route exact path='/process' render={({history}) => 
-								<Process image={this.state.user.selection} user={this.state.user.info}/>
+								<Process 
+									image={this.state.user.selection} 
+									user={this.state.user.info}
+									errorHandler={this.handleError} 
+									history={history}
+								/>
 							}/>
 							<Route exact path='privacy' component={Privacy}/>
 						</div>

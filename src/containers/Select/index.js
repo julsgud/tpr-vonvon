@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import update from 'react-addons-update';
+import update from 'immutability-helper';
 
 import ImageButton from 'components/ImageButton';
 
@@ -29,6 +29,7 @@ class Select extends Component {
 		}
 
 		this.handleClick = this.handleClick.bind(this);
+		this.getImage = this.getImage.bind(this);
 	}
 
 	componentDidMount() {
@@ -81,8 +82,22 @@ class Select extends Component {
 		this.props.history.push('/process');
 	}
 
+	buildHeaderText() {
+		let h;
+
+		if (!this.props.errorMessage) {
+			h = 'Hey ' + this.getFirstName(this.props.info.name) + ', escoge una foto donde se vea tu cara!';
+		} else {
+			h = this.props.errorMessage;
+		}
+
+		return h;
+	}
+
 	render() {
 		let imageButtons = [];
+
+		let headerText = this.buildHeaderText();
 
 		if (this.state.spinner) {
 			return(
@@ -101,7 +116,7 @@ class Select extends Component {
 			return(
 				<Row center='xs'>
 					<Col xs={12}>
-						<H3> Hey {this.getFirstName(this.props.info.name)}, escoge una foto donde se vea tu cara! </H3>
+						<H3> {headerText} </H3>
 					</Col>
 					<Row around='xs' middle='xs'>
 						{imageButtons}
