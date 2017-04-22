@@ -53,8 +53,9 @@ class Process extends Component {
 			imageType: {$set: t}
 		});
 		this.setState(newState, () => {
-			// console.log(this.state);
+			console.log(this.state);
 		});
+		console.log(this.props.image);
 	}
 
 	findCanvasDimensions() {
@@ -127,7 +128,6 @@ class Process extends Component {
 		o.bool = false;
 		let frameDimension = frame[dimensionToCompare]; 
 		
-
 		for (let i = 0; i < this.props.image.images.length; i++) {
 			if (this.props.image.images[i][dimensionToCompare] < frameDimension + difference && this.props.image.images[i][dimensionToCompare] > frameDimension - difference) {
 				o.index = i;
@@ -181,7 +181,7 @@ class Process extends Component {
 			});
 			this.setState(newState, () => {
 				//console.log(this.state);
-				console.log(response.data.images[0].faces[0]);
+				// console.log(response.data.images[0].faces[0]);
 			});
 			return this.onKairosResponse();
 		}).catch((error) => {
@@ -229,15 +229,13 @@ class Process extends Component {
 	}
 
 	drawCanvas() {
-		const {canvas, frame, imageAnalysis, imageSource} = this.state;
+		const {canvas, frame, imageAnalysis, imageSource, imageType} = this.state;
 
 		const c = document.getElementById('c');
 		c.width = canvas.width;
 		c.height = canvas.height;
 		const ctx = c.getContext('2d');
 
-		
-		
 		// get width and height from state
 		const w = c.width;
 		const h = c.height;
@@ -248,6 +246,8 @@ class Process extends Component {
 		const frameHeight = frame.height;
 		const xMargin = frame.xMargin;
 		const yMargin = frame.yMargin;
+
+		console.log('** frameWidth: ' + frameWidth + ' ** frameHeight: ' + frameHeight);
 
 		const frame1 = {
 			'x': xMargin,
@@ -264,13 +264,13 @@ class Process extends Component {
 			'y': yMargin
 		}
 
-		const extras = {
-			diff: frame.width - imageAnalysis.width,
-		}
+		let s = {};
 
 		/*
 			Draw Images in order
 		*/
+
+		// Resize image proportionally to fit face box best inside frame
 		const img = new Image();
 		const img2 = new Image();
 		const img3 = new Image();
@@ -279,7 +279,7 @@ class Process extends Component {
 		const loadImage2 = () => {
 			img2.onload = function() {
 				loadImage3();
-		    	ctx.drawImage(img2, (img2.naturalWidth - frameWidth)/2, 0, frameWidth, frameHeight, frame2.x, frame2.y, frameWidth, frameHeight);
+		    	ctx.drawImage(img2, s.x, s.y, s.w, s.h, frame2.x, frame2.y, frameWidth, frameHeight);
 			};
 			img2.src = imageSource;
 		};
@@ -305,25 +305,44 @@ class Process extends Component {
 		const loadImage1 = () => {
 			img.onload = () =>  {
 			loadImage2();
-				// source = s, destination = d;
-				// drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
-		    	//ctx.drawImage(img, (img.naturalWidth - frameWidth)/2, 0, frameWidth, frameHeight, frame1.x, frame1.y, frameWidth, frameHeight);
-		    	ctx.drawImage(img, imageAnalysis.topLeftX - extras.diff, 0, frameWidth, img.naturalHeight, frame1.x, frame1.y, frameWidth, frameHeight);
+				s = getScaleHelpers(imageType, img.naturalWidth, img.naturalHeight, frameWidth, frameHeight, imageAnalysis.topLeftX, imageAnalysis.topLeftY, imageAnalysis.width, imageAnalysis.height);
+		    	ctx.drawImage(img, s.x, s.y, s.w, s.h, frame1.x, frame1.y, frameWidth, frameHeight);
 			};
 			img.src = imageSource;
-
-			console.log(this.state.image.height + ' ' + frame.height);
 		}
 
+		const getScaleHelpers = (type, srcWidth, srcHeight, frameWidth, frameHeight, boxX, boxY, boxWidth, boxHeight) => {
+			let s = {};
+
+			if (type == 'landscape' || type == 'square') {
+				// new width
+				let newWidth = frameHeight * srcWidth / srcHeight;
+
+				// width of chunk to resize
+				s.w = frameWidth * srcWidth / newWidth;
+				s.h = srcHeight;
+
+				// where to start cut
+				s.x = boxX - (Math.abs(boxWidth - s.w))/2;
+				s.y = 0;
+
+				return s;
+			} else {
+				// new
+				let newHeight = frameWidth * srcHeight / srcWidth;
+
+				// width of chunk
+				s.w = srcWidth;
+				s.h = frameHeight * srcHeight / newHeight;
+
+				// where to start cut
+				s.x = 0;
+				s.y = boxY - (Math.abs(boxHeight - s.h))/2;
+
+				return s;
+			}
+		}
 		loadImage1();	
-	}
-
-	ifLandscapeOrSquare() {
-
-	}
-
-	ifPortrait() {
-
 	}
 
 	getFirstName(name) {
@@ -336,8 +355,6 @@ class Process extends Component {
 	}
 
 	render() {
-		const imgUrl = 'https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/14141904_10157493651325571_2937761036611221966_n.jpg?oh=3aa2092405c0b8ce9eefe3af8760095f&oe=59979D18';
-	
 		if (this.state.loading) {
 			return (
 				<Row center='xs'>
