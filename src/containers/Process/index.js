@@ -6,6 +6,8 @@ import axios from 'axios';
 import styled from 'styled-components';
 import update from 'immutability-helper';
 
+import Share from 'components/Share';
+
 import palette from 'palette';
 
 const Img = styled.img`
@@ -345,6 +347,14 @@ class Process extends Component {
 		loadImage1();	
 	}
 
+	canvasToBlob() {
+		const c = document.getElementById('c');
+
+		c.toBlob((blob) => {
+			let newImg = document.createElement('img');
+		});
+	}
+
 	getFirstName(name) {
 		let str = name;
 		let s;
@@ -373,6 +383,9 @@ class Process extends Component {
 					</Col>
 					<Col xs={12}>
 						<Canvas id="c"></Canvas>
+					</Col>
+					<Col xs={8}>
+						<Share id="c"></Share>
 					</Col>
 				</Row>
 			);
