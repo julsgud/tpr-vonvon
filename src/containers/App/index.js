@@ -14,7 +14,7 @@ import Process from 'containers/Process';
 import Privacy from 'containers/Privacy';
 
 const AppWrapper = styled.div`
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Calibre-Bold', sans-serif;
 	width: 100%;
 	max-width: calc(768px + 16px * 2);
 	min-height: 100%;
