@@ -9,6 +9,7 @@ import update from 'immutability-helper';
 import Share from 'components/Share';
 
 import palette from 'palette';
+import {pickCreature} from 'creatures';
 
 const Img = styled.img`
 `;
@@ -33,6 +34,7 @@ class Process extends Component {
 			imageAnalysis: null,
 			imageType: null,
 			loading: true,
+			creature: null,
 			canvas: {},
 			frame: {}
 		};
@@ -47,17 +49,19 @@ class Process extends Component {
 
 		let i = this.findImage(f, t);
 
+		let cr = pickCreature(0);
+
 		let newState = update(this.state, {
 			canvas: {$set: c},
 			frame: {$set: f},
 			image: {$set: i},
 			imageSource: {$set: i.source},
-			imageType: {$set: t}
+			imageType: {$set: t},
+			creature: {$set: cr}
 		});
 		this.setState(newState, () => {
-			console.log(this.state);
+			// console.log(this.state);
 		});
-		console.log(this.props.image);
 	}
 
 	findCanvasDimensions() {
@@ -123,6 +127,11 @@ class Process extends Component {
 				}
 			}
 		}
+	}
+
+	pickCreature() {
+		let o = {};
+
 	}
 
 	findNearestSizeVersion(dimensionToCompare, frame, difference) {
@@ -231,7 +240,7 @@ class Process extends Component {
 	}
 
 	drawCanvas() {
-		const {canvas, frame, imageAnalysis, imageSource, imageType} = this.state;
+		const {canvas, frame, imageAnalysis, imageSource, imageType, creature, image} = this.state;
 
 		const c = document.getElementById('c');
 		c.width = canvas.width;
@@ -266,67 +275,115 @@ class Process extends Component {
 			'y': yMargin
 		}
 
-		let s = {};
+		// user, creature and object1 & 2 scale helpers
+		let uh = {};
+		let ch = {};
+		let o1h = {};
+		let o2h = {};
 
 		/*
 			Draw Images in order
 		*/
-
-		// Resize image proportionally to fit face box best inside frame
 		const img = new Image();
 		const img2 = new Image();
 		const img3 = new Image();
 		const img4 = new Image();
+		const img5 = new Image();
 
-		const loadImage2 = () => {
-			img2.onload = function() {
-				loadImage3();
-		    	ctx.drawImage(img2, s.x, s.y, s.w, s.h, frame2.x, frame2.y, frameWidth, frameHeight);
-			};
-			img2.src = imageSource;
-		};
-		
-		const loadImage3 = () => {
-			const img3 = new Image();
-			img3.onload = () => {
-				loadImage4();
-				ctx.globalAlpha = 0.5;
-				ctx.drawImage(img3, frame2.x, frame2.y, frameWidth, frameHeight);
-			}
-			img3.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
-		}
-
-		const loadImage4 = () => {
-			img4.onload = () => {
-				ctx.globalAlpha = 1;
-				ctx.drawImage(img4, frame3.x, frame3.y, frameWidth, frameHeight);
-			}
-			img4.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
-		}
-
+		// user frame
 		const loadImage1 = () => {
 			img.onload = () =>  {
 			loadImage2();
-				s = getScaleHelpers(imageType, img.naturalWidth, img.naturalHeight, frameWidth, frameHeight, imageAnalysis.topLeftX, imageAnalysis.topLeftY, imageAnalysis.width, imageAnalysis.height);
-		    	ctx.drawImage(img, s.x, s.y, s.w, s.h, frame1.x, frame1.y, frameWidth, frameHeight);
+				uh = getUserHelpers(imageType, img.naturalWidth, img.naturalHeight, frame1, frameWidth, frameHeight, imageAnalysis);
+		    	ctx.drawImage(img, uh.x, uh.y, uh.w, uh.h, uh.frameX, uh.frameY, uh.frameWidth, uh.frameHeight);
+		    	ctx.fillStyle='#f31c21';
+		    	ctx.fillRect(uh.leftEyeX, uh.leftEyeY, 20, 20);
+		    	ctx.fillRect(uh.rightEyeX, uh.rightEyeY, 20, 20);
 			};
 			img.src = imageSource;
 		}
 
-		const getScaleHelpers = (type, srcWidth, srcHeight, frameWidth, frameHeight, boxX, boxY, boxWidth, boxHeight) => {
+		// user frame for mods
+		const loadImage2 = () => {
+			img2.onload = function() {
+				loadImage3();
+		    	ctx.drawImage(img2, uh.x, uh.y, uh.w, uh.h, frame2.x, frame2.y, frameWidth, frameHeight);
+			};
+			img2.src = imageSource;
+		};
+
+		// object 1
+		const loadImage3 = () => {
+			const img3 = new Image();
+			img3.onload = () => {
+				loadImage4();
+				o1h = getObjectHelpers(creature.name, img3.naturalWidth, img3.naturalHeight, frame2.x, frame2.y, frameWidth, frameHeight, imageAnalysis);
+				ctx.drawImage(img3, o1h.x, o1h.y, o1h.w, o1h.h, o1h.frameX, o1h.frameY, o1h.frameWidth, o1h.frameHeight);
+			}
+			img3.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameHeight.toFixed(0).toString() + '/v1491770566/' + creature.object1 + '.png';
+		}
+
+		// object 2
+		const loadImage4 = () => {
+			img4.onload = () => {
+				loadImage5();
+				//ctx.drawImage(img4, frame3.x, frame3.y, frameWidth, frameHeight);
+			}
+			img4.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
+		}
+
+		// creature
+		const loadImage5 = () => {
+			img5.onload = () => {
+				ch = getCreatureHelpers(creature.name, img5.naturalWidth, img5.naturalHeight, frame3.x, frame3.y, frameWidth, frameHeight);
+				ctx.drawImage(img5, ch.x, ch.y, ch.w, ch.h, ch.frameX, ch.frameY, ch.frameWidth, ch.frameHeight);
+			}
+			img5.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameHeight.toFixed(0).toString() + '/v1491770566/' + creature.name + '.png';
+		}
+
+		const getUserHelpers = (type, srcWidth, srcHeight, frame, frameWidth, frameHeight, imageAnalysis) => {
 			let s = {};
+			const boxX = imageAnalysis.topLeftX;
+			const boxWidth = imageAnalysis.width;
+			const boxY = imageAnalysis.topLeftY;
+			const boxHeight = imageAnalysis.height;
 
 			if (type == 'landscape' || type == 'square') {
-				// new width
+				// Width of image when resized to fit new height
 				let newWidth = frameHeight * srcWidth / srcHeight;
 
-				// width of chunk to resize
+				// chunk in resized image that will be cropped
 				s.w = frameWidth * srcWidth / newWidth;
 				s.h = srcHeight;
 
 				// where to start cut
+				const newBoxX = boxX * newWidth / srcWidth;
 				s.x = boxX - (Math.abs(boxWidth - s.w))/2;
 				s.y = 0;
+
+				console.warn(newBoxX + ' ' + boxX);
+
+				// frame dims
+				s.frameX = frame.x;
+				s.frameY = frame.y;
+				s.frameWidth = frameWidth;
+				s.frameHeight = frameHeight;
+
+				// eye pos with resize
+				const leftEyeXPost = imageAnalysis.leftEyeCenterX * newWidth / srcWidth;
+				const leftEyeYPost = imageAnalysis.leftEyeCenterY * frameHeight / srcHeight;
+				const rightEyeXPost = imageAnalysis.rightEyeCenterX * newWidth / srcWidth;
+				const rightEyeYPost = imageAnalysis.rightEyeCenterY * frameHeight / srcHeight;
+
+				// eye pos in frame
+				s.leftEyeX = Math.abs(leftEyeXPost - s.x + s.frameX);
+				s.leftEyeY = Math.abs(leftEyeYPost - s.y + s.frameY);
+				s.rightEyeX = Math.abs(rightEyeXPost - s.x + xMargin);
+				s.rightEyeY = Math.abs(rightEyeYPost - s.y + yMargin);
+
+				console.log(srcWidth + ' ' + newWidth + ' ' + srcHeight + ' ' + frameHeight);
+				console.log(imageAnalysis.leftEyeCenterX + ' ' + s.leftEyeX);
+				console.log(imageAnalysis.leftEyeCenterY + ' ' + s.leftEyeY);
 
 				return s;
 			} else {
@@ -344,6 +401,51 @@ class Process extends Component {
 				return s;
 			}
 		}
+
+		const getCreatureHelpers = (name, srcWidth, srcHeight, frameX, frameY, frameWidth, frameHeight) => {
+			let s = {};
+
+			switch(name) {
+				case 'joto':
+
+				// console.log(imageAnalysis);
+					s.x = (srcWidth-frameWidth)/2.7;
+					s.w = frameWidth*1.22;
+					s.h = frameHeight*1.22;
+					s.y = -(frameHeight - s.w)/3;
+
+					s.frameX = frameX;
+					s.frameY = frameY;
+					s.frameWidth = frameWidth;
+					s.frameHeight = frameHeight;
+
+				break;
+			}
+
+			return s;
+		};
+
+		const getObjectHelpers = (name, srcWidth, srcHeight, frameX, frameY, frameWidth, frameHeight, imageAnalysis) => {
+			let s = {};
+
+			switch(name) {
+				case 'joto':
+
+					s.x = 0;
+					s.y = 0;
+					s.w = frameWidth;
+					s.h = frameHeight;
+					s.frameX = frameX;
+					s.frameY = frameY;
+					s.frameWidth = frameWidth;
+					s.frameHeight = frameHeight;
+
+				break;
+			}
+
+			return s;
+		}
+
 		loadImage1();	
 	}
 
