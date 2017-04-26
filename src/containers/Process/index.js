@@ -61,6 +61,7 @@ class Process extends Component {
 		});
 		this.setState(newState, () => {
 			// console.log(this.state);
+			console.log(this.props.image);
 		});
 	}
 
@@ -358,10 +359,23 @@ class Process extends Component {
 
 				// where to start cut
 				const newBoxX = boxX * newWidth / srcWidth;
-				s.x = boxX - (Math.abs(boxWidth - s.w))/2;
+				
+				// s.x = boxX - (Math.abs(boxWidth - s.w))/2;
+				let middleOfFaceX = boxX + boxWidth/2;
+				let frameWidthByHalf = s.w/2;
+				// start to cut 
+				s.x = middleOfFaceX - frameWidthByHalf;
+				// let firstChunk = srcWidth - (srcWidth - s.x);
+				let firstChunk = srcWidth - s.x;
+				let endCut = s.x + s.w;
+				let secondChunk = srcWidth - endCut;
+				// console.log(boxX + '***' + + s.x);
+				// console.log(s.w + '((()))' + boxX);
+				// s.x = boxX;
 				s.y = 0;
 
-				console.warn(newBoxX + ' ' + boxX);
+				// let cut = firstChunk + 10;
+				let cut = firstChunk + 10;
 
 				// frame dims
 				s.frameX = frame.x;
@@ -376,14 +390,11 @@ class Process extends Component {
 				const rightEyeYPost = imageAnalysis.rightEyeCenterY * frameHeight / srcHeight;
 
 				// eye pos in frame
-				s.leftEyeX = Math.abs(leftEyeXPost - s.x + s.frameX);
-				s.leftEyeY = Math.abs(leftEyeYPost - s.y + s.frameY);
-				s.rightEyeX = Math.abs(rightEyeXPost - s.x + xMargin);
-				s.rightEyeY = Math.abs(rightEyeYPost - s.y + yMargin);
-
-				console.log(srcWidth + ' ' + newWidth + ' ' + srcHeight + ' ' + frameHeight);
-				console.log(imageAnalysis.leftEyeCenterX + ' ' + s.leftEyeX);
-				console.log(imageAnalysis.leftEyeCenterY + ' ' + s.leftEyeY);
+				s.leftEyeX = Math.abs(leftEyeXPost + frame.x - cut);
+				console.warn('a: ' + leftEyeXPost + ' b: ' + frame.x + ' c: ' + cut + ' d: ' + s.leftEyeX);
+				s.leftEyeY = leftEyeYPost + frame.y;
+				s.rightEyeX = rightEyeXPost + frame.x - cut;
+				s.rightEyeY = rightEyeYPost + frame.y;
 
 				return s;
 			} else {
