@@ -61,6 +61,7 @@ class Process extends Component {
 		});
 		this.setState(newState, () => {
 			// console.log(this.state);
+			console.log(this.props.image);
 		});
 	}
 
@@ -235,8 +236,409 @@ class Process extends Component {
 
 	componentDidUpdate() {
 		if (!this.state.loading) {
-			this.drawCanvas();
+			this.drawCanvas2();
 		}
+	}
+
+	drawCanvas2() {
+		const {canvas, frame, imageAnalysis, imageSource, imageType, creature, image} = this.state;
+
+		const c = document.getElementById('c');
+		c.width = canvas.width;
+		c.height = canvas.height;
+		const ctx = c.getContext('2d');
+
+		// get width and height from state
+		const w = c.width;
+		const h = c.height;
+		console.log('** window: w' + window.innerWidth +'px h' + window.innerHeight + 'px ** canvas: ' + c.width + 'px h' + c.height+ 'px');
+
+		// get margins and frame w and h from state
+		const frameWidth = frame.width;
+		const frameHeight = frame.height;
+		const xMargin = frame.xMargin;
+		const yMargin = frame.yMargin;
+
+		console.log('** frameWidth: ' + frameWidth + ' ** frameHeight: ' + frameHeight);
+
+		const frame1 = {
+			'x': xMargin,
+			'y': yMargin
+		}
+
+		const frame2 = {
+			'x': (xMargin * 2) + frameWidth,
+			'y': yMargin
+		}
+
+		const frame3 = {
+			'x': (xMargin * 3) + (frameWidth * 2),
+			'y': yMargin
+		}
+
+		// user, creature and object1 & 2 scale helpers
+		let uh = {};
+		let ch = {};
+		let o1h = {};
+		let o2h = {};
+
+		/*
+			Draw Images in order
+		*/
+		const img = new Image();
+		const img2 = new Image();
+		const img3 = new Image();
+		const img4 = new Image();
+		const img5 = new Image();
+
+		let x, y;
+
+		////////******** test ********////////
+
+		const testImage1 = () => {
+			img.onload = () => {
+				drawTest();
+				testScale();
+				testCrop();
+			}
+			img.src = imageSource;
+		}
+
+		
+
+		const testScale = () => {
+			const testFrame = {
+				x: img.naturalWidth + 2, 
+				y: 0
+			}
+
+			uh = getUserHelpers1(imageType, img.naturalWidth, img.naturalHeight, testFrame, frameWidth, frameHeight, imageAnalysis);
+		    ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, uh.frameX, uh.frameY, uh.w, uh.h);
+			ctx.rect(uh.frameX, uh.frameY, uh.w, uh.h);
+		    ctx.stroke();
+
+		    ctx.fillStyle='#f31c21';
+			ctx.fillRect(uh.leftEyeX, uh.leftEyeY, 14, 14);
+			ctx.fillRect(uh.rightEyeX, uh.rightEyeY, 14, 14);
+		}
+
+		const testCrop = (x, y) => {
+			const testFrame = {
+				x: x,
+				y: y
+			}
+
+			uh = getUserHelpers2(imageType, img.naturalWidth, img.naturalHeight, frame3, frameWidth, frameHeight, imageAnalysis);
+		    ctx.drawImage(img, uh.x, uh.y, uh.w, uh.h, uh.frameX, uh.frameY, uh.frameWidth, uh.frameHeight);
+			ctx.rect(uh.frameX, uh.frameY, uh.frameWidth, uh.frameHeight);
+		    ctx.stroke();
+
+		    ctx.fillStyle='#f31c21';
+			ctx.fillRect(uh.leftEyeX, uh.leftEyeY, 14, 14);
+			ctx.fillRect(uh.rightEyeX, uh.rightEyeY, 14, 14);
+		}
+
+		const drawTest = () => {
+			ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight);
+			ctx.fillStyle='#f31c21';
+			ctx.fillRect(imageAnalysis.leftEyeCenterX, imageAnalysis.leftEyeCenterY, 8, 8);
+			ctx.fillRect(imageAnalysis.rightEyeCenterX, imageAnalysis.rightEyeCenterY, 8, 8);
+		}
+
+		testImage1();
+
+		// userHelpers
+
+		const getUserHelpers2 = (type, srcWidth, srcHeight, frame, frameWidth, frameHeight, imageAnalysis) => {
+			let s = {};
+			const boxX = imageAnalysis.topLeftX;
+			const boxWidth = imageAnalysis.width;
+			const boxY = imageAnalysis.topLeftY;
+			const boxHeight = imageAnalysis.height;
+
+			if (type == 'landscape' || type == 'square') {
+				// Width of image when resized to fit new height
+				let newWidth = frameHeight * srcWidth / srcHeight;
+
+				// chunk in resized image that will be cropped
+				s.w = frameWidth * srcWidth / newWidth;
+				s.h = srcHeight;
+
+				// where to start cut
+				const newBoxX = boxX * newWidth / srcWidth;
+				
+				// s.x = boxX - (Math.abs(boxWidth - s.w))/2;
+				let middleOfFaceX = boxX + boxWidth/2;
+				let frameWidthByHalf = s.w/2;
+				// start to cut 
+				s.x = middleOfFaceX - frameWidthByHalf;
+				let firstChunk = srcWidth - s.x;
+				let endCut = s.x + s.w;
+				let secondChunk = srcWidth - endCut;
+				// console.log(boxX + '***' + + s.x);
+				// console.log(s.w + '((()))' + boxX);
+				// s.x = boxX;
+				s.y = 0;
+
+				let cut = firstChunk + 10;
+
+				// frame dims
+				s.frameX = frame.x;
+				s.frameY = 0;
+				s.frameWidth = frameWidth;
+				s.frameHeight = frameHeight;
+
+				// eye pos with resize
+				const leftEyeXPost = imageAnalysis.leftEyeCenterX * newWidth / srcWidth;
+				const leftEyeYPost = imageAnalysis.leftEyeCenterY * frameHeight / srcHeight;
+				const rightEyeXPost = imageAnalysis.rightEyeCenterX * newWidth / srcWidth;
+				const rightEyeYPost = imageAnalysis.rightEyeCenterY * frameHeight / srcHeight;
+
+				// eye pos in frame
+				s.leftEyeX = leftEyeXPost + frame.x - cut;
+				s.leftEyeY = leftEyeYPost;
+				s.rightEyeX = rightEyeXPost + frame.x - cut;
+				s.rightEyeY = rightEyeYPost;
+
+				// console.log(srcWidth + ' ' + newWidth + ' ' + srcHeight + ' ' + frameHeight);
+				// console.log(imageAnalysis.leftEyeCenterX + ' ' + s.leftEyeX);
+				// console.log(imageAnalysis.leftEyeCenterY + ' ' + s.leftEyeY);
+
+				return s;
+			} else {
+				// new
+				let newHeight = frameWidth * srcHeight / srcWidth;
+
+				// width of chunk
+				s.w = srcWidth;
+				s.h = frameHeight * srcHeight / newHeight;
+
+				// where to start cut
+				s.x = 0;
+				s.y = boxY - (Math.abs(boxHeight - s.h))/2;
+
+				return s;
+			}
+		}
+
+		const getUserHelpers1 = (type, srcWidth, srcHeight, frame, frameWidth, frameHeight, imageAnalysis) => {
+			let s = {};
+			const boxX = imageAnalysis.topLeftX;
+			const boxWidth = imageAnalysis.width;
+			const boxY = imageAnalysis.topLeftY;
+			const boxHeight = imageAnalysis.height;
+
+			if (type == 'landscape' || type == 'square') {
+				// Width of image when resized to fit new height
+				let newWidth = frameHeight * srcWidth / srcHeight;
+
+				// chunk in resized image that will be cropped
+				s.w = newWidth;
+				x = newWidth + frame.x;
+				y = 0;
+				s.h = frameHeight;
+
+				// where to start cut
+				const newBoxX = boxX * newWidth / srcWidth;
+				s.x = boxX - (Math.abs(boxWidth - s.w))/2;
+				s.y = 0;
+
+				
+
+				// frame dims
+				s.frameX = frame.x;
+				s.frameY = frame.y;
+				s.frameWidth = frameWidth;
+				s.frameHeight = frameHeight;
+
+				// eye pos with resize
+				const leftEyeXPost = imageAnalysis.leftEyeCenterX * newWidth / srcWidth;
+				const leftEyeYPost = imageAnalysis.leftEyeCenterY * frameHeight / srcHeight;
+				const rightEyeXPost = imageAnalysis.rightEyeCenterX * newWidth / srcWidth;
+				const rightEyeYPost = imageAnalysis.rightEyeCenterY * frameHeight / srcHeight;
+
+				// eye pos in frame
+				s.leftEyeX = leftEyeXPost + frame.x;
+				s.leftEyeY = leftEyeYPost;
+				s.rightEyeX = rightEyeXPost + frame.x;
+				s.rightEyeY = rightEyeYPost;
+
+				
+
+				return s;
+			} else {
+				// new
+				let newHeight = frameWidth * srcHeight / srcWidth;
+
+				// width of chunk
+				s.w = srcWidth;
+				s.h = frameHeight * srcHeight / newHeight;
+
+				// where to start cut
+				s.x = 0;
+				s.y = boxY - (Math.abs(boxHeight - s.h))/2;
+
+				return s;
+			}
+		}
+
+		// user frame
+		const loadImage1 = () => {
+			img.onload = () =>  {
+			loadImage2();
+				uh = getUserHelpers(imageType, img.naturalWidth, img.naturalHeight, frame1, frameWidth, frameHeight, imageAnalysis);
+		    	ctx.drawImage(img, uh.x, uh.y, uh.w, uh.h, uh.frameX, uh.frameY, uh.frameWidth, uh.frameHeight);
+		    	ctx.fillStyle='#f31c21';
+		    	ctx.fillRect(uh.leftEyeX, uh.leftEyeY, 20, 20);
+		    	ctx.fillRect(uh.rightEyeX, uh.rightEyeY, 20, 20);
+			};
+			img.src = imageSource;
+		}
+
+		// user frame for mods
+		const loadImage2 = () => {
+			img2.onload = function() {
+				loadImage3();
+		    	ctx.drawImage(img2, uh.x, uh.y, uh.w, uh.h, frame2.x, frame2.y, frameWidth, frameHeight);
+			};
+			img2.src = imageSource;
+		};
+
+		// object 1
+		const loadImage3 = () => {
+			const img3 = new Image();
+			img3.onload = () => {
+				loadImage4();
+				o1h = getObjectHelpers(creature.name, img3.naturalWidth, img3.naturalHeight, frame2.x, frame2.y, frameWidth, frameHeight, imageAnalysis);
+				ctx.drawImage(img3, o1h.x, o1h.y, o1h.w, o1h.h, o1h.frameX, o1h.frameY, o1h.frameWidth, o1h.frameHeight);
+			}
+			img3.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameHeight.toFixed(0).toString() + '/v1491770566/' + creature.object1 + '.png';
+		}
+
+		// object 2
+		const loadImage4 = () => {
+			img4.onload = () => {
+				loadImage5();
+				//ctx.drawImage(img4, frame3.x, frame3.y, frameWidth, frameHeight);
+			}
+			img4.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameWidth.toFixed(0).toString() + '/v1491770566/Rey_gqihcs.png';
+		}
+
+		// creature
+		const loadImage5 = () => {
+			img5.onload = () => {
+				ch = getCreatureHelpers(creature.name, img5.naturalWidth, img5.naturalHeight, frame3.x, frame3.y, frameWidth, frameHeight);
+				ctx.drawImage(img5, ch.x, ch.y, ch.w, ch.h, ch.frameX, ch.frameY, ch.frameWidth, ch.frameHeight);
+			}
+			img5.src = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + frameHeight.toFixed(0).toString() + '/v1491770566/' + creature.name + '.png';
+		}
+
+		const getUserHelpers = (type, srcWidth, srcHeight, frame, frameWidth, frameHeight, imageAnalysis) => {
+			let s = {};
+			const boxX = imageAnalysis.topLeftX;
+			const boxWidth = imageAnalysis.width;
+			const boxY = imageAnalysis.topLeftY;
+			const boxHeight = imageAnalysis.height;
+
+			if (type == 'landscape' || type == 'square') {
+				// Width of image when resized to fit new height
+				let newWidth = frameHeight * srcWidth / srcHeight;
+
+				// chunk in resized image that will be cropped
+				s.w = frameWidth * srcWidth / newWidth;
+				s.h = srcHeight;
+
+				// where to start cut
+				const newBoxX = boxX * newWidth / srcWidth;
+				s.x = boxX - (Math.abs(boxWidth - s.w))/2;
+				s.y = 0;
+
+				console.warn(newBoxX + ' ' + boxX);
+
+				// frame dims
+				s.frameX = frame.x;
+				s.frameY = frame.y;
+				s.frameWidth = frameWidth;
+				s.frameHeight = frameHeight;
+
+				// eye pos with resize
+				const leftEyeXPost = imageAnalysis.leftEyeCenterX * newWidth / srcWidth;
+				const leftEyeYPost = imageAnalysis.leftEyeCenterY * frameHeight / srcHeight;
+				const rightEyeXPost = imageAnalysis.rightEyeCenterX * newWidth / srcWidth;
+				const rightEyeYPost = imageAnalysis.rightEyeCenterY * frameHeight / srcHeight;
+
+				// eye pos in frame
+				s.leftEyeX = Math.abs(leftEyeXPost - s.x + s.frameX);
+				s.leftEyeY = Math.abs(leftEyeYPost - s.y + s.frameY);
+				s.rightEyeX = Math.abs(rightEyeXPost - s.x + xMargin);
+				s.rightEyeY = Math.abs(rightEyeYPost - s.y + yMargin);
+
+				console.log(srcWidth + ' ' + newWidth + ' ' + srcHeight + ' ' + frameHeight);
+				console.log(imageAnalysis.leftEyeCenterX + ' ' + s.leftEyeX);
+				console.log(imageAnalysis.leftEyeCenterY + ' ' + s.leftEyeY);
+
+				return s;
+			} else {
+				// new
+				let newHeight = frameWidth * srcHeight / srcWidth;
+
+				// width of chunk
+				s.w = srcWidth;
+				s.h = frameHeight * srcHeight / newHeight;
+
+				// where to start cut
+				s.x = 0;
+				s.y = boxY - (Math.abs(boxHeight - s.h))/2;
+
+				return s;
+			}
+		}
+
+		const getCreatureHelpers = (name, srcWidth, srcHeight, frameX, frameY, frameWidth, frameHeight) => {
+			let s = {};
+
+			switch(name) {
+				case 'joto':
+
+				// console.log(imageAnalysis);
+					s.x = (srcWidth-frameWidth)/2.7;
+					s.w = frameWidth*1.22;
+					s.h = frameHeight*1.22;
+					s.y = -(frameHeight - s.w)/3;
+
+					s.frameX = frameX;
+					s.frameY = frameY;
+					s.frameWidth = frameWidth;
+					s.frameHeight = frameHeight;
+
+				break;
+			}
+
+			return s;
+		};
+
+		const getObjectHelpers = (name, srcWidth, srcHeight, frameX, frameY, frameWidth, frameHeight, imageAnalysis) => {
+			let s = {};
+
+			switch(name) {
+				case 'joto':
+
+					s.x = 0;
+					s.y = 0;
+					s.w = frameWidth;
+					s.h = frameHeight;
+					s.frameX = frameX;
+					s.frameY = frameY;
+					s.frameWidth = frameWidth;
+					s.frameHeight = frameHeight;
+
+				break;
+			}
+
+			return s;
+		}
+
+		// loadImage1();	
 	}
 
 	drawCanvas() {
