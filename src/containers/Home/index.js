@@ -28,9 +28,6 @@ class Home extends Component {
 				<Col xs={12}>
 					<h3> A que Ser Extraordinario te pareces!? </h3>
 				</Col>
-				<Col xs={12}>
-					<p> Averigualo ahora! </p>
-				</Col>
 				<Col>
 					<FacebookLogin 
 						infoCallback={this.props.infoHandler}
