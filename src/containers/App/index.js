@@ -17,10 +17,10 @@ const AppWrapper = styled.div`
 	font-family: 'Calibre-Bold', sans-serif;
 	width: 100%;
 	max-width: calc(768px + 16px * 2);
-	min-height: 100%;
+	min-height: 100vh;
   	margin: 0 auto;
   	display: flex;
-  	height: 100%;
+  	height: 100vh;
   	flex-direction: column;
 `;
 
