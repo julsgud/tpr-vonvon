@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const getAnalysis() {
+export const getSecondAnalysis = (png, KAIROS_ID, KAIROS_KEY, handleResponse) => {
 	return axios({
 		method: 'post',
 		url: 'https://api.kairos.com/detect',
@@ -10,11 +10,11 @@ export const getAnalysis() {
 			app_key: KAIROS_KEY
 		},
 		data: {
-			'image': this.state.imageSource
+			'image': png
 		}
 	}).then((response) => {			
-		console.log(response.data.images[0]);
-		return response.data.images[0];
+		// console.log(response.data.images[0]);
+		return handleResponse(response.data.images[0]);
 	}).catch((error) => {
 		console.error(error);
 	});

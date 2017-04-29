@@ -9,6 +9,7 @@ import update from 'immutability-helper';
 import Share from 'components/Share';
 
 import palette from 'palette';
+import {getSecondAnalysis} from 'requests';
 import {pickCreature, getCreatureUrl, getCreatureHelpers} from 'creatures';
 import {getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
@@ -19,7 +20,8 @@ const H3 = styled.h3`
 	color: ${palette.black};
 `;
 
-const Canvas = styled.canvas`
+const HiddenCanvas = styled.canvas`
+	/*display: none;*/
 `;
 
 const KAIROS_ID = '69e02886';
@@ -31,16 +33,21 @@ class Process extends Component {
 
 		this.state = {
 			image: null,
+			imageBlob: null,
 			imageSource: null,
 			imageAnalysis: null,
+			imageAnalysis2: null,
 			imageType: null,
 			loading: true,
+			processing: true,
 			firstAnalysis: false,
 			secondAnalysis: false,
 			creature: null,
 			canvas: {},
 			frame: {}
 		};
+
+		this.handleSecondAnalysis = this.handleSecondAnalysis.bind(this);
 	}
 
 	componentWillMount() {
@@ -78,7 +85,7 @@ class Process extends Component {
 			c.height = (c.width*9)/16;
 		}
 
-		// console.log(c);
+		console.log(c);
 
 		return c;
 	}
@@ -208,7 +215,6 @@ class Process extends Component {
 			});
 			this.setState(newState, () => {
 				//console.log(this.state);
-				// console.log(response.data.images[0].faces[0]);
 			});
 			return this.onKairosResponse();
 		}).catch((error) => {
@@ -246,21 +252,34 @@ class Process extends Component {
 	}
 
 	onKairosResponse() {
-		return this.setState({loading: false});
+		return this.setState({firstAnalysis: true});
 	}
 
 	componentDidUpdate() {
-		if (!this.state.loading) {
-			this.drawCanvasForAnalysis();
+		if (this.state.loading && this.state.firstAnalysis && this.state.processing) {
+			this.drawCanvasForSecondAnalysis();
+		} else if (this.state.loading && this.state.secondAnalysis) {
+			console.log('ready to draw');
 		}
 	}
 
-	drawCanvasForAnalysis() {
+	handleSecondAnalysis(response) {
+		const data = response;
+		const newState = update(this.state, {
+			imageAnalysis2: {$set: data},
+			secondAnalysis: {$set: true}
+		});
+		this.setState(newState, () => {
+			// console.log(this.state);
+		});
+	}
+
+	drawCanvasForSecondAnalysis() {
 		const {canvas, frame, imageAnalysis, imageSource, imageType, creature, image} = this.state;
 
 		const c = document.getElementById('c');
-		c.width = canvas.width;
-		c.height = canvas.height;
+		c.width = 800;
+		c.height = 450;
 		const ctx = c.getContext('2d');
 
 		// get width and height from state
@@ -360,17 +379,22 @@ class Process extends Component {
 		}
 
 		const saveToBlob = () => {
-			let png = c.toDataURL();
+			this.setState({processing: false});
 
-			// let newState = update(this.state, {
-			// 	imageBlob: {$set: png}
-			// });
-			// this.setState(newState, () => {
-			// 	console.log(this.state);
-			// });
+			const png = c.toDataURL();
+
+			const newState = update(this.state, {
+				imageBlob: {$set: png}
+			});
+			this.setState(newState);
+
+			return getSecondAnalysis(png, KAIROS_ID, KAIROS_KEY, this.handleSecondAnalysis);
 		}
 
 		loadImage1();
+	}
+
+	drawCanvasWithObjects() {
 
 	}
 
@@ -384,16 +408,29 @@ class Process extends Component {
 	}
 
 	render() {
-		if (this.state.loading) {
+		if (this.state.loading && this.state.processing) {
 			return (
 				<Row center='xs'>
 					<Col>
 						<Loading type='bubbles' color={palette.red}/>
 					</Col>
+					<Col xs={12}>
+						<HiddenCanvas id="c"></HiddenCanvas>
+					</Col>
+				</Row>
+			);
+		} else if (this.state.loading) {
+			return (
+				<Row center='xs'>
+					<Col>
+						<Loading type='bubbles' color={palette.red}/>
+					</Col>
+					<Col xs={12}>
+						<HiddenCanvas id="c2"></HiddenCanvas>
+					</Col>
 				</Row>
 			);
 		} else {
-
 			return(
 				<Row center='xs'>
 					<Col xs={12}>
@@ -401,7 +438,7 @@ class Process extends Component {
 						<br></br>
 					</Col>
 					<Col xs={12}>
-						<Canvas id="c"></Canvas>
+						<Canvas id="c3"></Canvas>
 					</Col>
 					<Col xs={8}>
 						<Share id="c"></Share>
