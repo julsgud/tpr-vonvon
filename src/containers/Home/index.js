@@ -26,7 +26,7 @@ class Home extends Component {
 					<Img src="https://res.cloudinary.com/julsgc/image/upload/v1491106020/Boletia_995x380__2_fqawa8.png"/>
 				</Col>
 				<Col xs={12}>
-					<h3> A que Ser Extraordinario te pareces!? </h3>
+					<h3> A cuál de los #SeresExtraordinarios te pareces!? </h3>
 				</Col>
 				<Col>
 					<FacebookLogin 

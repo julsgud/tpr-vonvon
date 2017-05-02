@@ -1,3 +1,30 @@
+export const findCanvasDimensions = () => {
+	let c = {};
+
+	if (window.innerWidth < 800) {
+		c.width = window.innerWidth - 16;
+		c.height = (c.width*9)/16;
+	} else {
+		c.width = 800;
+		c.height = (c.width*9)/16;
+	}
+
+	// console.log(c);
+
+	return c;
+}
+
+export const findFrameDimensions = (c) => {
+	let f = {};
+
+	f.xMargin = c.width/35;
+	f.yMargin = c.height/13;
+	f.width = (c.width - (f.xMargin * 4))/3;
+	f.height = c.height - (f.yMargin * 2);
+
+	return f;
+}
+
 export const getRandomBetween = (min, max) => {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -71,13 +98,13 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		s.x = boxX - xBuffer;
 		s.y = boxY - yBuffer;
 
-		console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
-		console.log('_________-------________-------');
+		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
+		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
+		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
+		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
+		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
+		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
+		// console.log('_________-------________-------');
 
 		// Corrections
 		// 1. If face is already large, keep it like in first frame
@@ -140,12 +167,12 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 			s.y = 0;
 		}
 
-		console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
+		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
+		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
+		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
+		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
+		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
+		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
 
 		// frame dims
 		s.frameX = frame.x;
@@ -167,13 +194,13 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		s.x = boxX - xBuffer;
 		s.y = boxY - yBuffer;
 
-		console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
-		console.log('_________-------________-------');
+		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
+		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
+		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
+		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
+		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
+		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
+		// console.log('_________-------________-------');
 
 		// Corrections
 		// 1. If face is already large, keep it like in first frame
@@ -236,13 +263,12 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 			s.y = boxY - (Math.abs(boxHeight - s.h))/2;
 		}
 
-		console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
-
+		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
+		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
+		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
+		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
+		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
+		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
 
 		// frame dims
 		s.frameX = frame.x;

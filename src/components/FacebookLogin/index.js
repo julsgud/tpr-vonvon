@@ -50,7 +50,7 @@ class FacebookLogin extends React.Component {
 		cookie: false,
 		reAuthenticate: false,
 		size: 'metro',
-		fields: 'name',
+		fields: 'name,gender,meeting_for',
 		version: '2.8',
 		language: 'en_US',
 		disableMobileRedirect: false,
@@ -122,7 +122,7 @@ class FacebookLogin extends React.Component {
 	}
 
 	getInfo = (authResponse) => {
-		return window.FB.api('/me', {fields: this.props.fields}, (me) => {
+		return window.FB.api('/me', {fields: 'name,gender,interested_in'}, (me) => {
 			Object.assign(me, authResponse);
 			return this.props.infoCallback(me);
 		});

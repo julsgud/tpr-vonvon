@@ -10,8 +10,8 @@ import Share from 'components/Share';
 
 import palette from 'palette';
 import {getSecondAnalysis} from 'requests';
-import {pickCreature, getCreatureUrl, getCreatureHelpers} from 'creatures';
-import {getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
+import {pickCreature, getCreatureUrl, getObjectUrl, getCreatureHelpers} from 'creatures';
+import {findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
 const Img = styled.img`
 `;
@@ -21,7 +21,7 @@ const H3 = styled.h3`
 `;
 
 const HiddenCanvas = styled.canvas`
-	/*display: none;*/
+	display: none;
 `;
 
 const KAIROS_ID = '69e02886';
@@ -43,6 +43,8 @@ class Process extends Component {
 			firstAnalysis: false,
 			secondAnalysis: false,
 			creature: null,
+			gender: null,
+			likes: null,
 			canvas: {},
 			frame: {}
 		};
@@ -51,15 +53,28 @@ class Process extends Component {
 	}
 
 	componentWillMount() {
-		let c = this.findCanvasDimensions();
+		const c = findCanvasDimensions();
 
-		let f = this.findFrameDimensions(c);
+		const f = findFrameDimensions(c);
 
-		let t = this.findImageType(this.props.image);
+		const t = this.findImageType(this.props.image);
 
-		let i = this.findLargestImage();
+		const i = this.findLargestImage();
 
-		let cr = pickCreature(getRandomBetween(0, 4));
+		// const cr = pickCreature(getRandomBetween(0, 4));
+		const cr = pickCreature(0);
+
+		const g = this.props.user.gender;
+
+		if (this.props.user.meeting_for) {
+			const l = this.props.user.meeting_for;
+		} else {
+			if (this.props.user.gender == 'male') {
+				const l = 'female';
+			} else {
+				const l = 'male';
+			}
+		}
 
 		let newState = update(this.state, {
 			canvas: {$set: c},
@@ -67,38 +82,13 @@ class Process extends Component {
 			image: {$set: i},
 			imageSource: {$set: i.source},
 			imageType: {$set: t},
-			creature: {$set: cr}
+			creature: {$set: cr},
+			gender: {$set: g},
+			likes: {$set: l}
 		});
 		this.setState(newState, () => {
 			// console.log(this.state);
 		});
-	}
-
-	findCanvasDimensions() {
-		let c = {};
-
-		if (window.innerWidth < 800) {
-			c.width = window.innerWidth - 16;
-			c.height = (c.width*9)/16;
-		} else {
-			c.width = 800;
-			c.height = (c.width*9)/16;
-		}
-
-		console.log(c);
-
-		return c;
-	}
-
-	findFrameDimensions(c) {
-		let f = {};
-
-		f.xMargin = c.width/35;
-		f.yMargin = c.height/13;
-		f.width = (c.width - (f.xMargin * 4))/3;
-		f.height = c.height - (f.yMargin * 2);
-
-		return f;
 	}
 
 	findLargestImage() {
@@ -189,6 +179,8 @@ class Process extends Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props.user);
+
 		return axios({
 			method: 'post',
 			url: 'https://api.kairos.com/detect',
@@ -259,7 +251,7 @@ class Process extends Component {
 		if (this.state.loading && this.state.firstAnalysis && this.state.processing) {
 			this.drawCanvasForSecondAnalysis();
 		} else if (this.state.loading && this.state.secondAnalysis) {
-			console.log('ready to draw');
+			this.drawCanvasWithObjects();
 		}
 	}
 
@@ -357,26 +349,7 @@ class Process extends Component {
 			img3.src = getCreatureUrl(frameHeight.toFixed(0).toString(), creature.code, creature.name);
 		}
 
-		const getObjectHelpers = (name, srcWidth, srcHeight, frameX, frameY, frameWidth, frameHeight, imageAnalysis) => {
-			let s = {};
-
-			switch(name) {
-				case 'joto':
-
-					s.x = 0;
-					s.y = 0;
-					s.w = frameWidth;
-					s.h = frameHeight;
-					s.frameX = frameX;
-					s.frameY = frameY;
-					s.frameWidth = frameWidth;
-					s.frameHeight = frameHeight;
-
-				break;
-			}
-
-			return s;
-		}
+		
 
 		const saveToBlob = () => {
 			this.setState({processing: false});
@@ -395,7 +368,100 @@ class Process extends Component {
 	}
 
 	drawCanvasWithObjects() {
+		const {canvas, frame, imageAnalysis2, imageBlob, creature} = this.state;
 
+		console.log(imageAnalysis2);
+		const middleFace = imageAnalysis2.faces[0];
+
+		const c = document.getElementById('c2');
+		c.width = canvas.width;
+		c.height = canvas.height;
+		const ctx = c.getContext('2d');
+
+		// helpers objs
+		let oh1 = {};
+		let oh2 = {};
+
+		// image objs
+		const img = new Image();
+		const obj1 = new Image();
+		const obj2 = new Image();
+
+		// drawing funcs
+		const loadImage1 = () => {
+			img.onload = () =>  {
+				loadObj1();
+		    	ctx.drawImage(img, 0, 0, c.width, c.height);
+			};
+			img.crossOrigin="anonymous";
+			img.src = imageBlob;
+		}
+
+		const loadObj1 = () => {
+			obj1.onload = () => {
+				loadObj2();
+				oh1 = getObjectHelpers(creature, 0, frame, middleFace, obj1);
+				ctx.drawImage(obj1, oh1.x, oh1.y);
+				// ctx.fillStyle = "#F00";
+				// ctx.rect(middleFace.rightEyeCenterX, middleFace.rightEyeCenterY, 12, 12);
+				// ctx.fillStyle = "#F00";
+				// ctx.rect(middleFace.leftEyeCenterX, middleFace.leftEyeCenterY, 12, 12);
+				// ctx.fillStyle = "#F00"
+				// ctx.rect(oh1.x + oh1.w/2, oh1.y + oh1.h/2, 12, 12);
+				ctx.fill();
+			}
+			obj1.crossOrigin="anonymous";
+			obj1.src = getObjectUrl(0, imageAnalysis2.faces[0], creature, frame);
+		}
+
+		const loadObj2 = () => {
+			obj2.onload = () => {
+				oh2 = getObjectHelpers(creature, 1, frame, middleFace, obj2);
+				ctx.fillStyle = "#F00"
+				// ctx.rect(oh2.x, oh2.y, 12, 12);
+				// ctx.fill();
+				ctx.drawImage(obj2, oh2.x, oh2.y);
+			}
+			obj2.crossOrigin="anonymous";
+			obj2.src = getObjectUrl(1, imageAnalysis2.faces[0], creature, frame);
+		}
+
+		const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
+			let o = {};
+
+			switch(creature.name) {
+				case 'joto':
+
+				if (objectIndex === 0) {
+					// check size of face against object before drawing
+					console.log('* face width: ' + face.width + ' * obj width: ' + obj.naturalWidth);
+					console.log('* face height: ' + face.height + ' * obj height: ' + obj.naturalHeight);
+
+					let middleOfFaceX = face.topLeftX + face.width/2;
+					let middleOfFaceY = face.topLeftY + face.height/2;
+					// source
+					o.x = face.rightEyeCenterX - obj.naturalWidth*.25;
+					o.y = face.rightEyeCenterY - obj.naturalHeight*.70;
+					o.w = obj.naturalWidth;
+					o.h = obj.naturalHeight
+
+					//dest
+
+
+				} else {
+					let mouthX = face.chinTipX;
+					let mouthY = face.chinTipY - face.height/4;
+					o.x = mouthX - obj.naturalWidth/2;
+					o.y = mouthY - obj.naturalHeight*.55;
+				}
+
+				break;
+			}
+
+			return o;
+		}
+
+		loadImage1();
 	}
 
 	getFirstName(name) {
@@ -426,7 +492,7 @@ class Process extends Component {
 						<Loading type='bubbles' color={palette.red}/>
 					</Col>
 					<Col xs={12}>
-						<HiddenCanvas id="c2"></HiddenCanvas>
+						<canvas id="c2"></canvas>
 					</Col>
 				</Row>
 			);
