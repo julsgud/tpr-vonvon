@@ -98,61 +98,6 @@ class Process extends Component {
 		return array[index];
 	}
 
-	findImage(f, type) {
-		let i = {};
-
-		if (type == 'landscape' || type == 'square') {
-			i = this.sizeRundownBy('height', f);
-		} else {
-			i = this.sizeRundownBy('width', f);
-		}		
-
-		return i;
-	}
-
-	sizeRundownBy(dimensionToCompare, frame) {
-		let i = {};
-
-		i = this.findNearestSizeVersion(dimensionToCompare, frame, 50);
-		if (i.bool) {
-			return this.props.image.images[i.index];
-		} else {
-			i = this.findNearestSizeVersion(dimensionToCompare, frame, 100);
-			if (i.bool) {
-				return this.props.image.images[i.index];
-			} else {
-				i = this.findNearestSizeVersion(dimensionToCompare, frame, 200);
-				if (i.bool) {
-					return this.props.image.images[i.index];
-				} else {
-					i = this.findNearestSizeVersion(dimensionToCompare, frame, 300);
-					if (i.bool) {
-						return this.props.image.images[i.index];
-					} else {
-						console.error('no image, pick another one');
-					}
-				}
-			}
-		}
-	}
-
-	findNearestSizeVersion(dimensionToCompare, frame, difference) {
-		let o = {};
-		o.bool = false;
-		let frameDimension = frame[dimensionToCompare]; 
-		
-		for (let i = 0; i < this.props.image.images.length; i++) {
-			if (this.props.image.images[i][dimensionToCompare] < frameDimension + difference && this.props.image.images[i][dimensionToCompare] > frameDimension - difference) {
-				o.index = i;
-				o.bool = true;
-				console.log('** image: ' + this.props.image.images[i][dimensionToCompare] + ' ** frame: ' + frameDimension);
-				break;
-			} 
-		}
-
-		return o;
-	}
-
 	findImageType(image) {
 		let str = '';
 
@@ -168,8 +113,6 @@ class Process extends Component {
 	}
 
 	componentDidMount() {
-		console.log(this.props.user);
-
 		return axios({
 			method: 'post',
 			url: 'https://api.kairos.com/detect',
@@ -358,9 +301,14 @@ class Process extends Component {
 
 	drawCanvasWithObjects() {
 		const {canvas, frame, imageAnalysis2, imageBlob, creature} = this.state;
-
-		console.log(imageAnalysis2);
-		const middleFace = imageAnalysis2.faces[0];
+		let middleFace;
+		for (let i = 0; i < imageAnalysis2.faces.length; i++) {
+			if (imageAnalysis2.faces[i].chinTipX > 300) {
+				middleFace = imageAnalysis2.faces[i];
+				break;
+			}
+		}
+		
 
 		const c = document.getElementById('c2');
 		c.width = canvas.width;
@@ -400,7 +348,7 @@ class Process extends Component {
 				ctx.fill();
 			}
 			obj1.crossOrigin="anonymous";
-			obj1.src = getObjectUrl(0, imageAnalysis2.faces[0], creature, frame);
+			obj1.src = getObjectUrl(0, middleFace, creature, frame);
 		}
 
 		const loadObj2 = () => {
@@ -412,7 +360,7 @@ class Process extends Component {
 				ctx.drawImage(obj2, oh2.x, oh2.y);
 			}
 			obj2.crossOrigin="anonymous";
-			obj2.src = getObjectUrl(1, imageAnalysis2.faces[0], creature, frame);
+			obj2.src = getObjectUrl(1, middleFace, creature, frame);
 		}
 
 		const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
@@ -432,16 +380,16 @@ class Process extends Component {
 					o.x = face.rightEyeCenterX - obj.naturalWidth*.25;
 					o.y = face.rightEyeCenterY - obj.naturalHeight*.70;
 					o.w = obj.naturalWidth;
-					o.h = obj.naturalHeight
-
-					//dest
-
-
+					o.h = obj.naturalHeight;
 				} else {
 					let mouthX = face.chinTipX;
-					let mouthY = face.chinTipY - face.height/4;
+					let mouthY = face.chinTipY - face.height/3.8;
 					o.x = mouthX - obj.naturalWidth/2;
 					o.y = mouthY - obj.naturalHeight*.55;
+
+					if (face.attributes.lips == 'Apart') {
+						o.y = mouthY - obj.naturalHeight*.63;
+					}
 				}
 
 				break;

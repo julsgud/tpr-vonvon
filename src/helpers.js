@@ -141,16 +141,18 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// 3. if negative cut points and box is less than half the chunk size, zoom in
 		if (boxWidth < s.w *.3 || boxHeight < s.h * .3) {
 			console.warn('correction 3');
+			let ratio = srcWidth/srcHeight;
+
 			let xBuffer = .5 * (frameWidth - boxWidth);
 			let yBuffer = .5 * (frameHeight - boxHeight);
 
 			// chunk in resized image that will be cropped
-			s.w = boxWidth + xBuffer;
-			s.h = boxHeight + yBuffer;
+			s.w = boxWidth + xBuffer/2.5;
+			s.h = boxHeight + yBuffer/2.5;
 
 			// where to start cut
-			s.x = boxX - xBuffer/2;
-			s.y = boxY - yBuffer/2;
+			s.x = boxX - xBuffer/5;
+			s.y = boxY - yBuffer/5;
 		}
 
 		// 4. If negative margin after corrections, back to first frame
@@ -167,12 +169,12 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 			s.y = 0;
 		}
 
-		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
+		console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
+		console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
+		console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
+		console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
+		console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
+		console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
 
 		// frame dims
 		s.frameX = frame.x;
@@ -237,16 +239,18 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// 3. if negative cut points and box is less than half the chunk size, zoom in
 		if (boxWidth < s.w *.3 || boxHeight < s.h * .3) {
 			console.warn('correction 3');
+			let ratio = srcWidth/srcHeight;
+
 			let xBuffer = .5 * (frameWidth - boxWidth);
 			let yBuffer = .5 * (frameHeight - boxHeight);
 
 			// chunk in resized image that will be cropped
-			s.w = boxWidth + xBuffer;
-			s.h = boxHeight + yBuffer;
+			s.w = boxWidth + xBuffer/2.5;
+			s.h = boxHeight + yBuffer/2.5;
 
 			// where to start cut
-			s.x = boxX - xBuffer/2;
-			s.y = boxY - yBuffer/2;
+			s.x = boxX - xBuffer/5;
+			s.y = boxY - yBuffer/5;
 		}
 
 		// 4. If negative margin after corrections, back to first frame
