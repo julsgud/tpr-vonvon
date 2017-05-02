@@ -157,36 +157,46 @@ export const getCreatureHelpers = (name, srcWidth, srcHeight, frameX, frameY, fr
 	return s;
 };
 
-export const getCreatureDescription = (creature, gender, pref) => {
+export const getCreatureDescription = (creature, gender) => {
 	let str = '';
 
-	switch(name) {
+	switch(creature.name) {
 		case 'joto':
 			if (gender == 'male') {
-
+				str = 'Para ti solo hay una palabra que te describe: “loquillo”. Eres un “loquillo” porque en un restorán con refresco de refill, nunca puedes escoger un solo sabor. Solo hasta que tu bebida agarra tonalidades rosáceas es cuando puedes ir a sentarte y disfrutar orgulloso de tu creación gaseosa. Eres un “loquillo” porque aprendiste (o aprenderás) a andar en patineta a los 28 años. Una vez te pintaste el pelo de verde y te fuiste a una fiesta pensando en que eras el más chido del lugar. Aunque muy probablemente no lo hayas sido, lo importante es el espíritu, y eso es lo que te caracterizará por el resto de tus días: tienes alma de loquillo.';
 			} else {
-				if (pref) {
-					if (pref == 'male') {
-
-					} else {
-
-					}
-				} 
+				str = 'Para ti solo hay una palabra que te describe: “loquilla”. Eres una “loquilla” porque en un restorán con refresco de refill, nunca puedes escoger un solo sabor. Solo hasta que tu bebida agarra tonalidades rosáceas es cuando puedes ir a sentarte y disfrutar orgullosa de tu creación gaseosa. Eres una “loquilla” porque aprendiste (o aprenderás) a andar en patineta a los 28 años. Una vez te pintaste el pelo de verde y te fuiste a una fiesta pensando en que eras la más chida del lugar. Aunque muy probablemente no lo hayas sido, lo importante es el espíritu, y eso es lo que te caracterizará por el resto de tus días: tienes alma de loquilla.';
 			}
 		break;
 		case 'queena':
-			
+			if (gender == 'male') {
+				str = 'Tú eres un tipo raro y lo sabes. Eres de los que, de niño, en el arenero encontrabas lombrices, y además de presumirlas, te las comías y le decías frescamente a tu amigo “sabe a pollo” (y aún lo piensas). Pero no todo es miel (o lombrices?) sobre hojuelas. Tus amigos te ven raro cuando te ven desayunando milanesa y Coca Cola. Tu novia no entiende por qué tu color favorito es el verde pistache. En el fondo, tú sabes que eres más normal de lo que aparentas. Es más, hasta eres cool. Sigue siendo así, pequeño insecto extraño.';
+			} else {
+				str = 'Tú eres una chica rara y lo sabes. Eres de las que, de niña, en el arenero encontrabas lombrices, y además de presumirlas, te las comías y le decías frescamente a tu amiga “sabe a pollo” (y aún lo piensas). Pero no todo es miel (o lombrices?) sobre hojuelas. Tus amigos te ven raro cuando te ven desayunando milanesa y Coca Cola. Tu novio no entiende por qué tu color favorito es el verde pistache. En el fondo, tú sabes que eres más normal de lo que aparentas. Es más, hasta eres cool. Sigue siendo así, pequeño insecto extraño.';
+			}
 		break;
 		case 'rey':
-			
+			if (gender == 'male') {
+				str = 'Eres el más malote de todos. No es que hayas decidido serlo, sino que los azares del destino y la situación en la que te puso la vida te forjó como tal. Por esa razón siempre escoges a Bowser en Mario Kart y le partes el hocico a todos. Te identificas con Shrek, no sólo porque tienes un amigo Burro, sino porque sabes que eres como una cebolla. Algo incomprendido, pero debajo de muchas capas, eres un tipo sensible.';
+			} else {
+				str = 'Eres la más malota de todas. No es que hayas decidido serlo, sino que los azares del destino y la situación en la que te puso la vida te forjó como tal. Por esa razón siempre escoges a Bowser en Mario Kart y le partes el hocico a todos. Te identificas con Shrek, no sólo porque tienes un amigo Burro, sino porque sabes que eres como una cebolla. Algo incomprendida, pero debajo de muchas capas, eres una chica sensible.';
+			}
 		break;
 		case 'as':
-			
+			if (gender == 'male') {
+				str = 'Tú eres, sin duda alguna, el romántico empedernido de tus amigos. Tu descripción de una película perfecta es la fusión de “10 cosas que odio de ti” con Miss Simpatía y/o Frozen. Eres un Belieber hecho y derecho, y aunque su show pasado haya estado horrible, vas a volver a estar en primera fila listo para gritar a todo pulmón cada una de sus rolas. Para ti el amor siempre gana, y esa es la razón por la que eres una persona tan chida para ser amigo.';
+			} else {
+				str = 'Tú eres, sin duda alguna, la romántica empedernida de tus amigos. Tu descripción de una película perfecta es la fusión de “10 cosas que odio de ti” con Miss Simpatía y/o Frozen. Eres un Belieber hecho y derecho, y aunque su show pasado haya estado horrible, vas a volver a estar en primera fila listo para gritar a todo pulmón cada una de sus rolas. Para ti el amor siempre gana, y esa es la razón por la que eres una persona tan chida para ser amiga.';
+			}
 		break;
 		case 'joker':
-			
-
+			if (gender == 'male') {
+				str = 'También conocido como “el ajonjolí de todos los moles”, tú nunca te pierdes un evento, por más insignificante que sea. Pero tienes tal suerte, que aunque seas adicto a estar en todos lados, te pasa todo lo terrible. Una vez te rompiste el diente con una cerveza. Otra vez te subiste al escenario y te aventaste al público, pero nadie te cachó. Y la lista de eventos desafortunados continúa sin fin. Por esa razón tus amigos saben que eres un gran elemento para compartir unas buenas carcajadas.';
+			} else {
+				str = 'También conocida como “el ajonjolí de todos los moles”, tú nunca te pierdes un evento, por más insignificante que sea. Pero tienes tal suerte, que aunque seas adicta a estar en todos lados, te pasa todo lo terrible. Una vez te rompiste el diente con una cerveza. Otra vez te subiste al escenario y te aventaste al público, pero nadie te cachó. Y la lista de eventos desafortunados continúa sin fin. Por esa razón tus amigos saben que eres un gran elemento para compartir unas buenas carcajadas.';
+			}
 		break;
 	}
 
+	return str;
 }
