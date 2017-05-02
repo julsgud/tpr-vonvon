@@ -68,12 +68,13 @@ export const getObjectUrl = (objectIndex, face, creature, frame) => {
 					url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/' + creature.object1code + '/' + creature.object1 + '.png';
 				}
 			} else {
-				if (face.roll < 0) {
 					size = (face.width*.90).toFixed(0);
+				if (face.roll < 0) {
 					rotation = face.roll + -9;
 					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation+ '/' + creature.object2code + '/' + creature.object2 + '.png';
 				} else {
-					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/' + creature.object2code + '/' + creature.object2 + '.png';
+					rotation = face.roll + 10;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
 				}
 			}
 		break;
