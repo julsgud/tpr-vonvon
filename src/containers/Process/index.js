@@ -10,7 +10,7 @@ import Share from 'components/Share';
 
 import palette from 'palette';
 import {getSecondAnalysis} from 'requests';
-import {pickCreature, getCreatureUrl, getObjectUrl, getCreatureHelpers} from 'creatures';
+import {pickCreature, getCreatureUrl, getObjectUrl, getCreatureHelpers, getCreatureDescription} from 'creatures';
 import {findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
 const Img = styled.img`
@@ -66,16 +66,6 @@ class Process extends Component {
 
 		const g = this.props.user.gender;
 
-		if (this.props.user.meeting_for) {
-			const l = this.props.user.meeting_for;
-		} else {
-			if (this.props.user.gender == 'male') {
-				const l = 'female';
-			} else {
-				const l = 'male';
-			}
-		}
-
 		let newState = update(this.state, {
 			canvas: {$set: c},
 			frame: {$set: f},
@@ -83,8 +73,7 @@ class Process extends Component {
 			imageSource: {$set: i.source},
 			imageType: {$set: t},
 			creature: {$set: cr},
-			gender: {$set: g},
-			likes: {$set: l}
+			gender: {$set: g}
 		});
 		this.setState(newState, () => {
 			// console.log(this.state);
@@ -497,7 +486,9 @@ class Process extends Component {
 				</Row>
 			);
 		} else {
-			return(
+			const description = getCreatureDescription(this.state.creature, this.props.user.gender);
+
+			return (
 				<Row center='xs'>
 					<Col xs={12}>
 						<H3> {this.getFirstName(this.props.user.name)}, te pareces al {this.state.creature.name} Extraordinario! </H3>
