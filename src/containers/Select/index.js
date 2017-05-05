@@ -65,7 +65,7 @@ class Select extends Component {
 					images: {$push: [response]}
 				});
 				this.setState(newState, () => {
-					console.log(this.state);
+					// console.log(this.state);
 				});
 			}
 			
