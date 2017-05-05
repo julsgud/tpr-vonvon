@@ -10,7 +10,7 @@ import Share from 'components/Share';
 
 import palette from 'palette';
 import {getFirstAnalysis, getSecondAnalysis} from 'requests';
-import {pickCreature, getCreatureUrl, getObjectUrl, getCreatureHelpers, getCreatureDescription} from 'creatures';
+import {pickCreature, getCreatureUrl, getObjectUrl, getStarUrl, getCreatureHelpers, getCreatureDescription} from 'creatures';
 import {findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
 const Img = styled.img`
@@ -63,7 +63,7 @@ class Process extends Component {
 		const i = this.findLargestImage();
 
 		// const cr = pickCreature(getRandomBetween(0, 4));
-		const cr = pickCreature(1);
+		const cr = pickCreature(0);
 
 		const g = this.props.user.gender;
 
@@ -196,6 +196,10 @@ class Process extends Component {
 		const img = new Image();
 		const img2 = new Image();
 		const img3 = new Image();
+		const star0 = new Image();
+		const star1 = new Image();
+		const star2 = new Image();
+		const star3 = new Image();
 
 		// user frame
 		const loadImage1 = () => {
@@ -222,15 +226,48 @@ class Process extends Component {
 		// creature
 		const loadImage3 = () => {
 			img3.onload = () => {
+				loadStar0();
 				ch = getCreatureHelpers(creature.name, img3.naturalWidth, img3.naturalHeight, frame3.x, frame3.y, frameWidth, frameHeight);
 				ctx.drawImage(img3, ch.x, ch.y, ch.w, ch.h, ch.frameX, ch.frameY, ch.frameWidth, ch.frameHeight);
-				saveToBlob();
 			}
 			img3.crossOrigin="anonymous";
 			img3.src = getCreatureUrl(frameHeight.toFixed(0).toString(), creature.code, creature.name);
 		}
 
-		
+		const loadStar0 = () => {
+			star0.onload = () => {
+				loadStar1();
+				ctx.drawImage(star0, frame2.x - star0.naturalWidth/2, frame2.y - star0.naturalHeight/2);
+			}
+			star0.crossOrigin = 'anonymous';
+			star0.src = getStarUrl(0);
+		}
+
+		const loadStar1 = () => {
+			star1.onload = () => {
+				loadStar2();
+				ctx.drawImage(star1, frame2.x + frameWidth - star1.naturalWidth/2, frame2.y - star1.naturalHeight/2);
+			}
+			star1.crossOrigin = 'anonymous';
+			star1.src = getStarUrl(1);
+		}
+
+		const loadStar2 = () => {
+			star2.onload = () => {
+				loadStar3();
+				ctx.drawImage(star2, frame2.x + frameWidth - star2.naturalWidth/2, frame2.y + frameHeight - star2.naturalHeight/2);
+			}
+			star2.crossOrigin = 'anonymous';
+			star2.src = getStarUrl(2);
+		}
+		const loadStar3 = () => {
+			star3.onload = () => {
+				ctx.drawImage(star3, frame2.x - star3.naturalWidth/2, frame2.y + frameHeight - star3.naturalHeight/2);
+				saveToBlob();
+			}
+			star3.crossOrigin = 'anonymous';
+			star3.src = getStarUrl(3);
+		}
 
 		const saveToBlob = () => {
 			this.setState({processing: false});
