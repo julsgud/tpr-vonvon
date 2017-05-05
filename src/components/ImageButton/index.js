@@ -1,7 +1,11 @@
 import React from 'react';
 import {Col} from 'react-flexbox-grid';
+import styled from 'styled-components';
 
-
+const Img = styled.img`
+	max-height: 150px;
+	max-width: 150px;
+`;
 
 class ImageButton extends React.Component {
 	constructor(props) {
@@ -32,7 +36,7 @@ class ImageButton extends React.Component {
 		return(
 			<Col xs>
 				<button onClick={this.handleClick}>
-					<img src={this.getImageThumbnailUrl(this.props.img)}></img>
+					<Img src={this.getImageThumbnailUrl(this.props.img)}></Img>
 				</button>
 			</Col>
 		);

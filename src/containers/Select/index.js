@@ -24,6 +24,7 @@ class Select extends Component {
 
 		this.state = {
 			images: [],
+			imageCounter: this.props.images.length,
 			spinner: true,
 			loading: false
 		}
@@ -52,18 +53,30 @@ class Select extends Component {
 
 	getImage(i) {
 		return window.FB.api('/' + this.props.images[i] + '?fields=images', (response) => {
-			// console.log(response);
-			let newState = update(this.state, {
-				images: {$push: [response]}
-			});
-			this.setState(newState);
-			if (this.state.images.length == this.props.images.length) {
+			let isPortrait = false;
+
+			if (response.images[0].height > response.images[0].width) {
+				isPortrait = true;
+				this.setState({imageCounter: this.state.imageCounter-1});
+			}
+
+			if (!isPortrait) {
+				let newState = update(this.state, {
+					images: {$push: [response]}
+				});
+				this.setState(newState, () => {
+					console.log(this.state);
+				});
+			}
+			
+			if (this.state.images.length == this.state.imageCounter) {
 				this.loadedAllImages();
 			}
 		}, {access_token: this.props.info.accessToken});
 	}
 
 	loadedAllImages() {
+
 		this.setState({spinner: false});
 		console.log('** loaded all images **');
 	}
