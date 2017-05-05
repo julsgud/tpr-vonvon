@@ -9,7 +9,7 @@ import update from 'immutability-helper';
 import Share from 'components/Share';
 
 import palette from 'palette';
-import {getSecondAnalysis} from 'requests';
+import {getFirstAnalysis, getSecondAnalysis} from 'requests';
 import {pickCreature, getCreatureUrl, getObjectUrl, getCreatureHelpers, getCreatureDescription} from 'creatures';
 import {findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
@@ -49,6 +49,7 @@ class Process extends Component {
 			frame: {}
 		};
 
+		this.handleFirstAnalysis = this.handleFirstAnalysis.bind(this);
 		this.handleSecondAnalysis = this.handleSecondAnalysis.bind(this);
 	}
 
@@ -62,7 +63,7 @@ class Process extends Component {
 		const i = this.findLargestImage();
 
 		// const cr = pickCreature(getRandomBetween(0, 4));
-		const cr = pickCreature(0);
+		const cr = pickCreature(1);
 
 		const g = this.props.user.gender;
 
@@ -113,70 +114,7 @@ class Process extends Component {
 	}
 
 	componentDidMount() {
-		return axios({
-			method: 'post',
-			url: 'https://api.kairos.com/detect',
-			headers: {
-				'Content-Type': 'application/json',
-				app_id: KAIROS_ID,
-				app_key: KAIROS_KEY
-			},
-			data: {
-				'image': this.state.imageSource
-			}
-		}).then((response) => {			
-			if (this.analysisFailed(response)) {
-				if (this.errorOnFacialRecognition(response)) {
-					this.props.errorHandler('No encontramos tu cara, escoge otra foto!');
-					return this.props.history.push('/select');
-				} else if (this.foundMultipleFaces(response)) {
-					this.props.errorHandler('Trampa! Hay mas de una cara en esa foto, escoge otra!');
-					return this.props.history.push('/select');
-				}
-			}
-			let newState = update(this.state, {
-				imageAnalysis: {$set: response.data.images[0].faces[0]}
-			});
-			this.setState(newState, () => {
-				//console.log(this.state);
-			});
-			return this.onKairosResponse();
-		}).catch((error) => {
-			console.error(error);
-		});
-	}
-
-	errorOnFacialRecognition(response) {
-		let bool = false;
-
-		if (response.data.Errors[0].ErrCode == 5002) {
-			bool = true;
-		}
-		return bool;
-	}
-
-	foundMultipleFaces(response) {
-		let bool = false;
-
-		if (response.data.images[0].faces.length > 1) {
-			bool = true;
-		}
-
-		return bool;
-	}
-
-	analysisFailed(response) {
-		let bool = false;
-
-		if (response.data.hasOwnProperty('Errors')) {
-			bool = true;
-		}
-
-		return bool;
-	}
-
-	onKairosResponse() {
-		return this.setState({firstAnalysis: true});
+		return getFirstAnalysis(this.state.imageSource, KAIROS_ID, KAIROS_KEY, this.handleFirstAnalysis, this.props.errorHandler, this.props.history);
 	}
 
 	componentDidUpdate() {
@@ -187,6 +125,17 @@ class Process extends Component {
 		}
 	}
 
+	handleFirstAnalysis(response) {
+		const data = response;
+		const newState = update(this.state, {
+			imageAnalysis: {$set: data},
+			firstAnalysis: {$set: true}
+		});
+		this.setState(newState, () => {
+			// console.log(this.state);
+		});
+	}
+
 	handleSecondAnalysis(response) {
 		const data = response;
 		const newState = update(this.state, {
@@ -194,7 +143,7 @@ class Process extends Component {
 			secondAnalysis: {$set: true}
 		});
 		this.setState(newState, () => {
-			// console.log(this.state);
+			console.log(this.state);
 		});
 	}
 
@@ -293,7 +242,7 @@ class Process extends Component {
 			});
 			this.setState(newState);
 
-			return getSecondAnalysis(png, KAIROS_ID, KAIROS_KEY, this.handleSecondAnalysis);
+			return getSecondAnalysis(png, KAIROS_ID, KAIROS_KEY, this.handleSecondAnalysis, this.props.errorHandler, this.props.history);
 		}
 
 		loadImage1();
@@ -309,7 +258,6 @@ class Process extends Component {
 			}
 		}
 		
-
 		const c = document.getElementById('c2');
 		c.width = canvas.width;
 		c.height = canvas.height;
@@ -318,11 +266,13 @@ class Process extends Component {
 		// helpers objs
 		let oh1 = {};
 		let oh2 = {};
+		let oh3 = {};
 
 		// image objs
 		const img = new Image();
 		const obj1 = new Image();
 		const obj2 = new Image();
+		const obj3 = new Image();
 
 		// drawing funcs
 		const loadImage1 = () => {
@@ -339,12 +289,6 @@ class Process extends Component {
 				loadObj2();
 				oh1 = getObjectHelpers(creature, 0, frame, middleFace, obj1);
 				ctx.drawImage(obj1, oh1.x, oh1.y);
-				// ctx.fillStyle = "#F00";
-				// ctx.rect(middleFace.rightEyeCenterX, middleFace.rightEyeCenterY, 12, 12);
-				// ctx.fillStyle = "#F00";
-				// ctx.rect(middleFace.leftEyeCenterX, middleFace.leftEyeCenterY, 12, 12);
-				// ctx.fillStyle = "#F00"
-				// ctx.rect(oh1.x + oh1.w/2, oh1.y + oh1.h/2, 12, 12);
 				ctx.fill();
 			}
 			obj1.crossOrigin="anonymous";
@@ -353,14 +297,22 @@ class Process extends Component {
 
 		const loadObj2 = () => {
 			obj2.onload = () => {
+				if (creature.objectCount > 2) loadObj3();
 				oh2 = getObjectHelpers(creature, 1, frame, middleFace, obj2);
 				ctx.fillStyle = "#F00"
-				// ctx.rect(oh2.x, oh2.y, 12, 12);
-				// ctx.fill();
 				ctx.drawImage(obj2, oh2.x, oh2.y);
 			}
 			obj2.crossOrigin="anonymous";
 			obj2.src = getObjectUrl(1, middleFace, creature, frame);
+		}
+		const loadObj3 = () => {
+			obj3.onload = () => {
+				oh3 = getObjectHelpers(creature, 2, frame, middleFace, obj3);
+				ctx.fillStyle = "#F00"
+				ctx.drawImage(obj3, oh3.x, oh3.y);
+			}
+			obj3.crossOrigin="anonymous";
+			obj3.src = getObjectUrl(2, middleFace, creature, frame);
 		}
 
 		const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
@@ -371,13 +323,10 @@ class Process extends Component {
 
 				if (objectIndex === 0) {
 					// check size of face against object before drawing
-					console.log('* face width: ' + face.width + ' * obj width: ' + obj.naturalWidth);
-					console.log('* face height: ' + face.height + ' * obj height: ' + obj.naturalHeight);
-
 					let middleOfFaceX = face.topLeftX + face.width/2;
 					let middleOfFaceY = face.topLeftY + face.height/2;
 					// source
-					o.x = face.rightEyeCenterX - obj.naturalWidth*.25;
+					o.x = face.rightEyeCenterX - obj.naturalWidth*.30;
 					o.y = face.rightEyeCenterY - obj.naturalHeight*.70;
 					o.w = obj.naturalWidth;
 					o.h = obj.naturalHeight;
@@ -388,9 +337,39 @@ class Process extends Component {
 					o.y = mouthY - obj.naturalHeight*.55;
 
 					if (face.attributes.lips == 'Apart') {
-						o.y = mouthY - obj.naturalHeight*.63;
+						o.y = mouthY - obj.naturalHeight*.60;
 					}
 				}
+
+				break;
+				case 'queena':
+
+				if (objectIndex === 0) {
+					o.x = face.rightEyeCenterX - obj.naturalWidth*.60;
+					o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+
+					if (face.pitch != 0) {
+						o.x = face.rightEyeCenterX - obj.naturalWidth*.60 + face.pitch/3;
+						o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+					}
+
+				} else if (objectIndex === 1) {
+					o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
+					o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+
+					if (face.pitch != 0) {
+						o.x = face.leftEyeCenterX - obj.naturalWidth*.40 + face.pitch/3;
+						o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+					}
+				} else {
+					let middleOfFaceX = face.topLeftX + face.width/2;
+					let middleOfFaceY = face.topLeftY + face.height/2;
+					o.x = middleOfFaceX - obj.naturalWidth*.62;
+					o.y = middleOfFaceY - obj.naturalHeight*.85;
+
+					if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.50;
+					if (face.pitch != 0) o.x += face.pitch/4;
+;				}
 
 				break;
 			}

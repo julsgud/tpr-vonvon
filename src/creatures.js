@@ -5,6 +5,7 @@ export const pickCreature = (index) => {
 		case 0:
 			o.name = 'joto';
 			o.code = 'v1493051207';
+			o.objectCount = 2;
 			o.object1code = 'v1493688917';
 			o.object1 = 'joto_ojos';
 			o.object2code = 'v1493688917';
@@ -13,14 +14,16 @@ export const pickCreature = (index) => {
 		case 1:
 			o.name = 'queena';
 			o.code = 'v1493051209';
+			o.objectCount = 3;
 			o.object1code = 'v1493688916';
-			o.object1 = 'queena_ojos';
+			o.object1 = 'queena_ojo';
 			o.object2code = 'v1493688916';
 			o.object2 = 'queena_nariz';
 		break;
 		case 2:
 			o.name = 'rey';
 			o.code = 'v1493051207';
+			o.objectCount = 2;
 			o.object1code = 'v1493688916';
 			o.object1 = 'rey_lentes';
 			o.object2code = 'v1493688916';
@@ -29,6 +32,7 @@ export const pickCreature = (index) => {
 		case 3:
 			o.name = 'as';
 			o.code = 'v1493051206';
+			o.objectCount = 3;
 			o.object1code = 'v1493688916';
 			o.object1 = 'az_ojo';
 			o.object2code = 'v1493688917';
@@ -37,6 +41,7 @@ export const pickCreature = (index) => {
 		case 4:
 			o.name = 'joker';
 			o.code = 'v1493051209';
+			o.objectCount = 3;
 			o.object1code = 'v1493688915';
 			o.object1 = 'joker_ojos';
 			o.object2code = 'v1493688916';
@@ -61,17 +66,21 @@ export const getObjectUrl = (objectIndex, face, creature, frame) => {
 	switch(creature.name) {
 		case 'joto':
 			if (objectIndex === 0) {
-				size = (face.eyeDistance + face.eyeDistance*.85).toFixed(0);
+				size = (face.eyeDistance + face.eyeDistance*.90).toFixed(0);
 				if (face.roll < 0) {
-					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/' + creature.object1code + '/' + creature.object1 + '.png';
+					rotation = face.roll + -3;
+					if (rotation < 0) rotation = 360 - face.roll + 3;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
 				} else {
-					url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/' + creature.object1code + '/' + creature.object1 + '.png';
+					rotation = face.roll + -3;
+
+					url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
 				}
 			} else {
 					size = (face.width*.90).toFixed(0);
 				if (face.roll < 0) {
 					rotation = face.roll + -9;
-					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation+ '/' + creature.object2code + '/' + creature.object2 + '.png';
+					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
 				} else {
 					rotation = face.roll + 10;
 					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
@@ -79,7 +88,29 @@ export const getObjectUrl = (objectIndex, face, creature, frame) => {
 			}
 		break;
 		case 'queena':
-			
+			if (objectIndex === 0) {
+				size = (face.width*.60).toFixed(0);
+				rotation = face.roll + -3;
+				if (rotation < 0) rotation = 360 + face.roll + 3;
+				url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+			} else if (objectIndex === 1) {
+				size = (face.width*.60).toFixed(0);
+				rotation = face.roll + -3;
+				if (rotation < 0) rotation = 360 + face.roll + 3;
+				url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+			} else {
+				size = (face.height*.22).toFixed(0);
+				if (face.roll < 0) {
+					rotation = 12;
+					rotation += Math.abs(face.roll);
+					if (face.pitch != 0) rotation = 12;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				} else {
+					rotation = -12;
+					rotation -= Math.abs(face.roll);
+					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				}
+			}
 		break;
 		case 'rey':
 			

@@ -142,17 +142,20 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		if (boxWidth < s.w *.3 || boxHeight < s.h * .3) {
 			console.warn('correction 3');
 			let ratio = srcWidth/srcHeight;
+			console.log(ratio);
 
 			let xBuffer = .5 * (frameWidth - boxWidth);
 			let yBuffer = .5 * (frameHeight - boxHeight);
 
 			// chunk in resized image that will be cropped
 			s.w = boxWidth + xBuffer/2.5;
-			s.h = boxHeight + yBuffer/2.5;
+			s.h = boxHeight + yBuffer/1.9;
+			// s.w = (boxWidth + xBuffer/2.5) * srcWidth / newWidth;
+			// s.h = boxHeight + yBuffer/2.5;
 
 			// where to start cut
 			s.x = boxX - xBuffer/5;
-			s.y = boxY - yBuffer/5;
+			s.y = boxY - yBuffer/3.8;
 		}
 
 		// 4. If negative margin after corrections, back to first frame
@@ -169,12 +172,12 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 			s.y = 0;
 		}
 
-		console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
+		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
+		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
+		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
+		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
+		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
+		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
 
 		// frame dims
 		s.frameX = frame.x;
