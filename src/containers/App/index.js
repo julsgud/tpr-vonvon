@@ -15,6 +15,7 @@ import Privacy from 'containers/Privacy';
 
 const AppWrapper = styled.div`
 	font-family: 'Calibre-Bold', sans-serif;
+	color: #282828;
 	width: 100%;
 	max-width: calc(768px + 16px * 2);
 	min-height: 100%;
@@ -155,10 +156,11 @@ class App extends Component {
 	}
 
 	render() {
+		console.log(this.props.location);
 		return (
 			<Router>
 				<AppWrapper>
-					<Header/>
+					<Header location={this.props.location}/>
 						<div>
 							<Route exact path='/' render={({history}) => 
 								<Home infoHandler={this.handleUserInfo} 

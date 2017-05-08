@@ -14,14 +14,20 @@ import {pickCreature, getCreatureUrl, getObjectUrl, getStarUrl, getCreatureHelpe
 import {findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
 const Img = styled.img`
+	max-width: 100%;
 `;
 
 const H3 = styled.h3`
-	color: ${palette.black};
+	/*color: ${palette.black};*/
+	margin-bottom: 0;
 `;
 
 const HiddenCanvas = styled.canvas`
 	display: none;
+`;
+
+const P = styled.p`
+	color: palette.blue;
 `;
 
 const KAIROS_ID = '69e02886';
@@ -34,6 +40,7 @@ class Process extends Component {
 		this.state = {
 			image: null,
 			imageBlob: null,
+			finalBlob: null,
 			imageSource: null,
 			imageAnalysis: null,
 			imageAnalysis2: null,
@@ -62,8 +69,8 @@ class Process extends Component {
 
 		const i = this.findLargestImage();
 
-		// const cr = pickCreature(getRandomBetween(0, 4));
-		const cr = pickCreature(0);
+		const cr = pickCreature(getRandomBetween(0, 4));
+		// const cr = pickCreature(1);
 
 		const g = this.props.user.gender;
 
@@ -217,6 +224,10 @@ class Process extends Component {
 			img2.onload = () => {
 				loadImage3();
 				uh2 = getFrame2Helpers(imageType, img.naturalWidth, img.naturalHeight, frame2, frameWidth, frameHeight, imageAnalysis);
+				// ctx.globalAlpha = 0.5;
+				// ctx.fillStyle = palette.ylw;		    	
+				// ctx.fillRect(frame2.x - 1.5, frame2.y - 1.5, frameWidth + 3, frameHeight + 3);
+				// ctx.globalAlpha = 1;
 		    	ctx.drawImage(img2, uh2.x, uh2.y, uh2.w, uh2.h, uh2.frameX, uh2.frameY, uh2.frameWidth, uh2.frameHeight);
 		    }
 			img2.crossOrigin="anonymous";
@@ -255,21 +266,21 @@ class Process extends Component {
 		const loadStar2 = () => {
 			star2.onload = () => {
 				loadStar3();
-				ctx.drawImage(star2, frame2.x + frameWidth - star2.naturalWidth/2, frame2.y + frameHeight - star2.naturalHeight/2);
+				ctx.drawImage(star2, frame2.x + frameWidth - star2.naturalWidth/1.8, frame2.y + frameHeight - star2.naturalHeight/1.5);
 			}
 			star2.crossOrigin = 'anonymous';
 			star2.src = getStarUrl(2);
 		}
 		const loadStar3 = () => {
 			star3.onload = () => {
-				ctx.drawImage(star3, frame2.x - star3.naturalWidth/2, frame2.y + frameHeight - star3.naturalHeight/2);
-				saveToBlob();
+				ctx.drawImage(star3, frame2.x - star3.naturalWidth/2, frame2.y + frameHeight - star3.naturalHeight/1.8);
+				getBlobForAnalysis();
 			}
 			star3.crossOrigin = 'anonymous';
 			star3.src = getStarUrl(3);
 		}
 
-		const saveToBlob = () => {
+		const getBlobForAnalysis = () => {
 			this.setState({processing: false});
 
 			const png = c.toDataURL();
@@ -338,6 +349,7 @@ class Process extends Component {
 				oh2 = getObjectHelpers(creature, 1, frame, middleFace, obj2);
 				ctx.fillStyle = "#F00"
 				ctx.drawImage(obj2, oh2.x, oh2.y);
+				if (creature.objectCount < 3) getFinalBlob();
 			}
 			obj2.crossOrigin="anonymous";
 			obj2.src = getObjectUrl(1, middleFace, creature, frame);
@@ -347,9 +359,20 @@ class Process extends Component {
 				oh3 = getObjectHelpers(creature, 2, frame, middleFace, obj3);
 				ctx.fillStyle = "#F00"
 				ctx.drawImage(obj3, oh3.x, oh3.y);
+				getFinalBlob();
 			}
 			obj3.crossOrigin="anonymous";
 			obj3.src = getObjectUrl(2, middleFace, creature, frame);
+		}
+
+		const getFinalBlob = () => {
+			const png = c2.toDataURL();
+
+			const newState = update(this.state, {
+				finalBlob: {$set: png},
+				loading: {$set: false}
+			});
+			this.setState(newState);
 		}
 
 		const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
@@ -357,57 +380,129 @@ class Process extends Component {
 
 			switch(creature.name) {
 				case 'joto':
+					if (objectIndex === 0) {
+						// check size of face against object before drawing
+						let middleOfFaceX = face.topLeftX + face.width/2;
+						let middleOfFaceY = face.topLeftY + face.height/2;
+						// source
+						o.x = face.rightEyeCenterX - obj.naturalWidth*.30;
+						o.y = face.rightEyeCenterY - obj.naturalHeight*.70;
+						o.w = obj.naturalWidth;
+						o.h = obj.naturalHeight;
+					} else {
+						let mouthX = face.chinTipX;
+						let mouthY = face.chinTipY - face.height/3.8;
+						o.x = mouthX - obj.naturalWidth/2;
+						o.y = mouthY - obj.naturalHeight*.55;
 
-				if (objectIndex === 0) {
-					// check size of face against object before drawing
-					let middleOfFaceX = face.topLeftX + face.width/2;
-					let middleOfFaceY = face.topLeftY + face.height/2;
-					// source
-					o.x = face.rightEyeCenterX - obj.naturalWidth*.30;
-					o.y = face.rightEyeCenterY - obj.naturalHeight*.70;
-					o.w = obj.naturalWidth;
-					o.h = obj.naturalHeight;
-				} else {
-					let mouthX = face.chinTipX;
-					let mouthY = face.chinTipY - face.height/3.8;
-					o.x = mouthX - obj.naturalWidth/2;
-					o.y = mouthY - obj.naturalHeight*.55;
-
-					if (face.attributes.lips == 'Apart') {
-						o.y = mouthY - obj.naturalHeight*.60;
+						if (face.attributes.lips == 'Apart') {
+							o.y = mouthY - obj.naturalHeight*.60;
+						}
 					}
-				}
-
 				break;
 				case 'queena':
-
-				if (objectIndex === 0) {
-					o.x = face.rightEyeCenterX - obj.naturalWidth*.60;
-					o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
-
-					if (face.pitch != 0) {
-						o.x = face.rightEyeCenterX - obj.naturalWidth*.60 + face.pitch/3;
+					if (objectIndex === 0) {
+						o.x = face.rightEyeCenterX - obj.naturalWidth*.60;
 						o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
-					}
 
-				} else if (objectIndex === 1) {
-					o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
-					o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+						if (face.pitch != 0) {
+							o.x = face.rightEyeCenterX - obj.naturalWidth*.60 + face.pitch/3;
+							o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+						}
 
-					if (face.pitch != 0) {
-						o.x = face.leftEyeCenterX - obj.naturalWidth*.40 + face.pitch/3;
+					} else if (objectIndex === 1) {
+						o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
 						o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+
+						if (face.pitch != 0) {
+							o.x = face.leftEyeCenterX - obj.naturalWidth*.40 + face.pitch/3;
+							o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+						}
+					} else {
+						let middleOfFaceX = face.topLeftX + face.width/2;
+						let middleOfFaceY = face.topLeftY + face.height/2;
+						o.x = middleOfFaceX - obj.naturalWidth*.62;
+						o.y = middleOfFaceY - obj.naturalHeight*.85;
+
+						if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.50;
+						if (face.pitch != 0) o.x += face.pitch/4;
 					}
-				} else {
-					let middleOfFaceX = face.topLeftX + face.width/2;
-					let middleOfFaceY = face.topLeftY + face.height/2;
-					o.x = middleOfFaceX - obj.naturalWidth*.62;
-					o.y = middleOfFaceY - obj.naturalHeight*.85;
+				break;
+				case 'rey':
+					if (objectIndex === 0) {
+						let middleOfFaceX = face.topLeftX + face.width/2;
+						let middleOfFaceY = face.topLeftY + face.height/2;
+						o.x = middleOfFaceX - obj.naturalWidth*.46;
+						o.y = middleOfFaceY - obj.naturalHeight*.94;
 
-					if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.50;
-					if (face.pitch != 0) o.x += face.pitch/4;
-;				}
+						if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.56;
+						if (face.pitch < 0) o.y = middleOfFaceY - obj.naturalHeight*.97
 
+					} else if (objectIndex === 1) {
+						o.x = face.chinTipX - obj.naturalWidth*.40;
+						o.y = face.chinTipY - obj.naturalHeight*.30;
+					} 
+				break;
+				case 'as':
+					if (objectIndex === 0) {
+						o.x = face.rightEyeCenterX - obj.naturalWidth*.50;
+						o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+
+						if (face.pitch != 0) {
+							o.x = face.rightEyeCenterX - obj.naturalWidth*.55 + face.pitch/3;
+							o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+						}
+					} else if (objectIndex === 1) {
+						o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
+						o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+
+						if (face.pitch != 0) {
+							o.x = face.leftEyeCenterX - obj.naturalWidth*.40 + face.pitch/3;
+							o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+						}
+					} else {
+						if (face.roll < 0) {
+							o.x = face.chinTipX - obj.naturalWidth*.30;
+						} else {
+							o.x = face.chinTipX - obj.naturalWidth*.85;
+						}
+						o.y = face.chinTipY - obj.naturalHeight*.20;
+
+						if (o.y + obj.naturalHeight/2 > frame.height) {
+							o.y -= obj.naturalHeight/4;
+						}
+					}				
+				break;
+				case 'joker':
+					if (objectIndex === 0) {
+						o.x = face.rightEyeCenterX - obj.naturalWidth*.45;
+						o.y = face.rightEyeCenterY - obj.naturalHeight*.69;
+
+						if (face.pitch != 0) {
+							o.x = face.rightEyeCenterX - obj.naturalWidth*.45 + face.pitch/3;
+							o.y = face.rightEyeCenterY - obj.naturalHeight*.69;
+						}
+
+					} else if (objectIndex === 1) {
+						o.x = face.leftEyeCenterX - obj.naturalWidth*.35;
+						o.y = face.leftEyeCenterY - obj.naturalHeight*.69;
+
+						if (face.pitch != 0) {
+							o.x = face.leftEyeCenterX - obj.naturalWidth*.35 + face.pitch/3;
+							o.y = face.leftEyeCenterY - obj.naturalHeight*.69;
+						}
+					} else {
+						let mouthX = face.chinTipX;
+						let mouthY = face.chinTipY - face.height/3.3;
+						o.x = mouthX - obj.naturalWidth*.48;
+						o.y = mouthY - obj.naturalHeight*.60;
+
+						if (face.attributes.lips == 'Apart') {
+							o.y = mouthY - obj.naturalHeight*.65;
+						}
+
+						if (face.roll != 0) o.x += face.roll;
+					}
 				break;
 			}
 
@@ -445,7 +540,7 @@ class Process extends Component {
 						<Loading type='bubbles' color={palette.red}/>
 					</Col>
 					<Col xs={12}>
-						<canvas id="c2"></canvas>
+						<HiddenCanvas id="c2"></HiddenCanvas>
 					</Col>
 				</Row>
 			);
@@ -453,16 +548,16 @@ class Process extends Component {
 			const description = getCreatureDescription(this.state.creature, this.props.user.gender);
 
 			return (
-				<Row center='xs'>
+				<Row center='xs' middle='xs'>
 					<Col xs={12}>
 						<H3> {this.getFirstName(this.props.user.name)}, te pareces al {this.state.creature.name} Extraordinario! </H3>
 						<br></br>
 					</Col>
 					<Col xs={12}>
-						<Canvas id="c3"></Canvas>
+						<Img src={this.state.finalBlob}></Img>
 					</Col>
-					<Col xs={8}>
-						<Share id="c"></Share>
+					<Col xs={12}>
+						<P> {description} </P>
 					</Col>
 				</Row>
 			);
