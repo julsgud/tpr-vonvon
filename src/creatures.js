@@ -34,16 +34,16 @@ export const pickCreature = (index) => {
 			o.code = 'v1493051206';
 			o.objectCount = 3;
 			o.object1code = 'v1493688916';
-			o.object1 = 'az_ojo';
+			o.object1 = 'as_ojo';
 			o.object2code = 'v1493688917';
-			o.object2 = 'az_patineta';
+			o.object2 = 'as_patineta';
 		break;
 		case 4:
 			o.name = 'joker';
 			o.code = 'v1493051209';
 			o.objectCount = 3;
 			o.object1code = 'v1493688915';
-			o.object1 = 'joker_ojos';
+			o.object1 = 'joker_ojo';
 			o.object2code = 'v1493688916';
 			o.object2 = 'joker_boca';
 		break;
@@ -112,13 +112,78 @@ export const getObjectUrl = (objectIndex, face, creature, frame) => {
 			}
 		break;
 		case 'rey':
-			
+			if (objectIndex === 0) {
+				size = (face.width*1.1).toFixed(0);
+				if (face.roll < 0) {
+					rotation = -5;
+					rotation += face.roll/2;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+				} else {
+					rotation = -5;
+					url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+				}
+			} else {
+					size = (face.height*.85).toFixed(0);
+				if (face.roll < 0) {
+					rotation = -12;
+					rotation += face.roll/2;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				} else {
+					rotation = 12;
+					rotation -= face.roll;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				}
+			}
 		break;
 		case 'as':
-			
+			if (objectIndex === 0) {
+				size = (face.width*.48).toFixed(0);
+				rotation = face.roll + -6;
+				if (rotation < 0) rotation = 360 + face.roll + 3;
+				url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+			} else if (objectIndex === 1) {
+				size = (face.width*.45).toFixed(0);
+				rotation = face.roll + -6;
+				if (rotation < 0) rotation = 360 + face.roll + 3;
+				url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+			} else {
+				size = (face.height*.7).toFixed(0);
+				if (face.roll < 0) {
+					rotation = 12;
+					rotation += Math.abs(face.roll);
+					if (face.pitch != 0) rotation = 12;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				} else {
+					rotation = -12;
+					rotation -= Math.abs(face.roll);
+					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				}
+			}
 		break;
 		case 'joker':
-			
+			if (objectIndex === 0) {
+				size = (face.width*.36).toFixed(0);
+				rotation = face.roll + -3;
+				if (rotation < 0) rotation = 360 + face.roll + 3;
+				url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+			} else if (objectIndex === 1) {
+				size = (face.width*.36).toFixed(0);
+				rotation = face.roll + -3;
+				if (rotation < 0) rotation = 360 + face.roll + 3;
+				url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
+			} else {
+				size = (face.width*.85).toFixed(0);
+				if (face.roll < 0) {
+					rotation = 0;
+					rotation -= Math.abs(face.roll/2);
+					// if (face.pitch != 0) rotation = 12;
+					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				} else {
+					rotation = 0;
+					rotation += Math.abs(face.roll/2);
+					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
+				}
+			}
 		break;
 	}
 	return url;
@@ -135,10 +200,10 @@ export const getStarUrl = (index) => {
 			url = 'http://res.cloudinary.com/julsgc/image/upload/a_hflip.vflip/v1494002002/star1.png';
 		break;
 		case 2:
-			url = 'http://res.cloudinary.com/julsgc/image/upload/v1494002002/star2.png'
+			url = 'http://res.cloudinary.com/julsgc/image/upload/c_scale,w_54/v1494002002/star2.png'
 		break;
 		case 3:
-			url = 'http://res.cloudinary.com/julsgc/image/upload/a_hflip.vflip/v1494002002/star2.png';
+			url = 'http://res.cloudinary.com/julsgc/image/upload/a_hflip.vflip,c_scale,w_54/v1494002002/star2.png';
 		break;
 	}
 
