@@ -257,7 +257,7 @@ class Process extends Component {
 		const loadStar1 = () => {
 			star1.onload = () => {
 				loadStar2();
-				ctx.drawImage(star1, frame2.x + frameWidth - star1.naturalWidth/2, frame2.y - star1.naturalHeight/2);
+				ctx.drawImage(star1, frame2.x + frameWidth - star1.naturalWidth/2, frame2.y - star1.naturalHeight/2.6);
 			}
 			star1.crossOrigin = 'anonymous';
 			star1.src = getStarUrl(1);
@@ -548,10 +548,9 @@ class Process extends Component {
 			const description = getCreatureDescription(this.state.creature, this.props.user.gender);
 
 			return (
-				<Row center='xs' middle='xs'>
+				<Row center='xs'>
 					<Col xs={12}>
-						<H3> {this.getFirstName(this.props.user.name)}, te pareces al {this.state.creature.name} Extraordinario! </H3>
-						<br></br>
+						<h3> {this.getFirstName(this.props.user.name)}, te pareces {this.state.creature.title} </h3>
 					</Col>
 					<Col xs={12}>
 						<Img src={this.state.finalBlob}></Img>

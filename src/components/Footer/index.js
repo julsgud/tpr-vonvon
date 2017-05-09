@@ -23,18 +23,17 @@ const theme = 'black'; // or 'white'
 export default class Footer extends Component {
 	render() {
 		return (
-				<Row around='xs' center='xs' middle='xs'>
-					<Col xs={11}>
-						<Spotify
-					  		uri="spotify:album:55Ul8L6tE3eO6JT8L11byT"
-					  		size={size}
-					  		view={view}
-					  	theme={theme}/>
-			  		</Col>
-			  		{/*<Col xs={2}>
-			  			<A href='https://termsfeed.com/privacy-policy/54cb5723bfac5aaec975d816662b8a37'> Privacidad </A>
-			  		</Col>*/}
-				</Row>
-		)
+			<Row around='xs' center='xs' middle='xs'>
+				
+				<Col xs={12}>
+					<Spotify
+				  		uri="spotify:album:55Ul8L6tE3eO6JT8L11byT"
+				  		size={size}
+				  		view={view}
+				  		theme={theme}
+				  	/>
+		  		</Col>
+			</Row>
+		);
 	}
 }

@@ -14,10 +14,6 @@ const Img = styled.img`
 	width: 200px;
 `;
 
-const H3 = styled.h3`
-	color: ${palette.black};
-`;
-
 class Select extends Component {
 	constructor(props) {
 		super(props);
@@ -129,7 +125,7 @@ class Select extends Component {
 			return(
 				<Row center='xs'>
 					<Col xs={12}>
-						<H3> {headerText} </H3>
+						<h3> {headerText} </h3>
 					</Col>
 					<Row around='xs' middle='xs'>
 						{imageButtons}

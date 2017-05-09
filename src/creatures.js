@@ -10,6 +10,7 @@ export const pickCreature = (index) => {
 			o.object1 = 'joto_ojos';
 			o.object2code = 'v1493688917';
 			o.object2 = 'joto_boca';
+			o.title = 'al #SlimerExtraordinario!';
 			break;
 		case 1:
 			o.name = 'queena';
@@ -19,6 +20,7 @@ export const pickCreature = (index) => {
 			o.object1 = 'queena_ojo';
 			o.object2code = 'v1493688916';
 			o.object2 = 'queena_nariz';
+			o.title = 'a la #QueenaExtraordinaria!';
 		break;
 		case 2:
 			o.name = 'rey';
@@ -28,6 +30,7 @@ export const pickCreature = (index) => {
 			o.object1 = 'rey_lentes';
 			o.object2code = 'v1493688916';
 			o.object2 = 'rey_espada';
+			o.title = 'al #ReyExtraordinario!';
 		break;
 		case 3:
 			o.name = 'as';
@@ -37,6 +40,7 @@ export const pickCreature = (index) => {
 			o.object1 = 'as_ojo';
 			o.object2code = 'v1493688917';
 			o.object2 = 'as_patineta';
+			o.title = 'al #AdolescenteExtraordinario!'
 		break;
 		case 4:
 			o.name = 'joker';
@@ -46,6 +50,7 @@ export const pickCreature = (index) => {
 			o.object1 = 'joker_ojo';
 			o.object2code = 'v1493688916';
 			o.object2 = 'joker_boca';
+			o.title = 'al #JokerExtraordinario!';
 		break;
 	}
 
