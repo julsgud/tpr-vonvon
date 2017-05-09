@@ -42,7 +42,7 @@ class FacebookLogin extends React.Component {
 	static defaultProps = {
 		appId: '1418273384901709',
 		autoLoad: 'false',
-		textButton: 'Averigualo ahora!',
+		textButton: 'Averígualo ahora!',
 		typeButton: 'button',
 		redirectUri: typeof window !== 'undefined' ? window.location.href : '/',
 		scope: 'public_profile, user_photos',

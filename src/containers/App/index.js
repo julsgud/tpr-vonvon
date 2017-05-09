@@ -79,8 +79,8 @@ class App extends Component {
 			});
 			this.sdkLoaded();
 			window.FB.getLoginStatus(this.checkLoginAfterRefresh);
-			};
-		}
+		};
+	}
 
 	checkLoginAfterRefresh(response) {
 		if (response.status === 'connected') {
