@@ -33,7 +33,8 @@ class App extends Component {
 			let user = loadState();
 			this.state = {
 				user: user,
-				isSdkLoaded: false
+				isSdkLoaded: false,
+				music: 'spotify:track:1t5ZZxitYzzka5BisJLVXf'
 			}
 			console.log('** 0 **: State Reloaded');
 			// console.log(this.state.user);
@@ -45,7 +46,8 @@ class App extends Component {
 					selection: null
 				},
 				isSdkLoaded: false,
-				errorMessage: null
+				errorMessage: null,
+				music: 'spotify:track:1t5ZZxitYzzka5BisJLVXf'
 			};
 		}
 
@@ -53,6 +55,7 @@ class App extends Component {
 		this.handleImages = this.handleImages.bind(this);
 		this.handleSelectedImage = this.handleSelectedImage.bind(this);
 		this.handleError = this.handleError.bind(this);
+		this.handleSong = this.handleSong.bind(this);
 	}
 
 	componentWillMount() {
@@ -155,8 +158,15 @@ class App extends Component {
 		this.setState(newState);
 	}
 
+	handleSong(data) {
+		let music = data;
+		let newState = update(this.state, {
+			music: {$set: music}
+		});
+		this.setState(newState);
+	}
+
 	render() {
-		console.log(this.props.location);
 		return (
 			<Router>
 				<AppWrapper>
@@ -180,13 +190,14 @@ class App extends Component {
 								<Process 
 									image={this.state.user.selection} 
 									user={this.state.user.info}
+									songHandler={this.handleSong}
 									errorHandler={this.handleError} 
 									history={history}
 								/>
 							}/>
 							<Route exact path='privacy' component={Privacy}/>
 						</div>
-					<Footer/>
+					<Footer playThis={this.state.music}/>
 				</AppWrapper>
 			</Router>
 		)
