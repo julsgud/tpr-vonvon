@@ -11,6 +11,7 @@ export const pickCreature = (index) => {
 			o.object2code = 'v1493688917';
 			o.object2 = 'joto_boca';
 			o.title = 'al #SlimerExtraordinario!';
+			o.song = 'spotify:track:6qzGxiXDemty6n8u9CXPSw';
 			break;
 		case 1:
 			o.name = 'queena';
@@ -21,6 +22,7 @@ export const pickCreature = (index) => {
 			o.object2code = 'v1493688916';
 			o.object2 = 'queena_nariz';
 			o.title = 'a la #QueenaExtraordinaria!';
+			o.song = 'spotify:track:3fEOWy2vh7sWkPWdd1buiT';
 		break;
 		case 2:
 			o.name = 'rey';
@@ -31,6 +33,7 @@ export const pickCreature = (index) => {
 			o.object2code = 'v1493688916';
 			o.object2 = 'rey_espada';
 			o.title = 'al #ReyExtraordinario!';
+			o.song = 'spotify:track:1t5ZZxitYzzka5BisJLVXf';
 		break;
 		case 3:
 			o.name = 'as';
@@ -41,6 +44,7 @@ export const pickCreature = (index) => {
 			o.object2code = 'v1493688917';
 			o.object2 = 'as_patineta';
 			o.title = 'al #AdolescenteExtraordinario!'
+			o.song = 'spotify:track:6vZEVXjT421LTSrrbtVUcd';
 		break;
 		case 4:
 			o.name = 'joker';
@@ -51,6 +55,7 @@ export const pickCreature = (index) => {
 			o.object2code = 'v1493688916';
 			o.object2 = 'joker_boca';
 			o.title = 'al #JokerExtraordinario!';
+			o.song = 'spotify:track:0txllJx4XQXa0FHortEcPF';
 		break;
 	}
 

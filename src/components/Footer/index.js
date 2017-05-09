@@ -24,10 +24,9 @@ export default class Footer extends Component {
 	render() {
 		return (
 			<Row around='xs' center='xs' middle='xs'>
-				
 				<Col xs={12}>
 					<Spotify
-				  		uri="spotify:album:55Ul8L6tE3eO6JT8L11byT"
+				  		uri={this.props.playThis}
 				  		size={size}
 				  		view={view}
 				  		theme={theme}

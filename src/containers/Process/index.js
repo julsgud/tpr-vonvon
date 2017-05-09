@@ -71,6 +71,7 @@ class Process extends Component {
 
 		const cr = pickCreature(getRandomBetween(0, 4));
 		// const cr = pickCreature(1);
+		this.props.songHandler(cr.song);
 
 		const g = this.props.user.gender;
 
