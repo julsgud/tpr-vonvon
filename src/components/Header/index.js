@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import {Row, Col} from 'react-flexbox-grid';
 
-import FacebookProvider, {Like} from 'react-facebook';
+import FacebookLike from 'components/FacebookLike';
 
 const H3 = styled.h3`
 	size: 32px;
@@ -26,10 +26,8 @@ export default class Header extends Component {
 					<Col xs={12}>
 						<Img src="http://res.cloudinary.com/julsgc/image/upload/v1494274636/banner_title.png"></Img>
 					</Col>
-					<Col xsOffset={3} xs={6}>
-						{/*<FacebookProvider appId='1418273384901709'>
-							<Like href="https://www.facebook.com/theplasticsrevolutionmx" colorScheme="dark"/>
-						</FacebookProvider>*/}
+					<Col xs={6}>
+						<FacebookLike sdkLoaded={this.props.sdkLoaded} href="https://www.facebook.com/theplasticsrevolutionmx"/>
 					</Col>
 				</Row>
 			</div>

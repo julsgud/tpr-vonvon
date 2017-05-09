@@ -24,7 +24,6 @@ class Home extends Component {
 			<Row center='xs' around='xs' middle='xs'>
 				<Col xs={12}>
 					<h3> A cuál de los #SeresExtraordinarios te pareces!? </h3>
-					<div className="fb-like" data-href="https://www.facebook.com/theplasticsrevolutionmx/" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="false" data-width={200}></div>
 				</Col>
 				<Col style={buttonStyle}>
 					<FacebookLogin 

@@ -78,7 +78,8 @@ class App extends Component {
 		window.fbAsyncInit = () => {
 			window.FB.init({
 				version: '2.8',
-				appId
+				appId: appId,
+				xfbml: true
 			});
 			this.sdkLoaded();
 			window.FB.getLoginStatus(this.checkLoginAfterRefresh);
@@ -103,7 +104,7 @@ class App extends Component {
 	      let js = element;
 	      if (d.getElementById(id)) { return; }
 	      js = d.createElement(s); js.id = id;
-	      js.src = `//connect.facebook.net/en_US/all.js`;
+	      js.src = `//connect.facebook.net/es_LA/all.js`;
 	      fjs.parentNode.insertBefore(js, fjs);
 	    })(document, 'script', 'facebook-jssdk');
 	}
@@ -170,7 +171,7 @@ class App extends Component {
 		return (
 			<Router>
 				<AppWrapper>
-					<Header location={this.props.location}/>
+					<Header sdkLoaded={this.state.isSdkLoaded}/>
 						<div>
 							<Route exact path='/' render={({history}) => 
 								<Home infoHandler={this.handleUserInfo} 
