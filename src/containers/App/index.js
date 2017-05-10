@@ -13,6 +13,8 @@ import Select from 'containers/Select';
 import Process from 'containers/Process';
 import Privacy from 'containers/Privacy';
 
+import cloudinary from 'cloudinary';
+
 const AppWrapper = styled.div`
 	font-family: 'Calibre-Bold', sans-serif;
 	color: #282828;
@@ -64,6 +66,7 @@ class App extends Component {
 			return;
 		}
 		this.setFbAsyncInit();
+		this.initCloudinary();
 		this.loadSdkAsynchronously();
 		let fbRoot = document.getElementById('fb-root');
 		if (!fbRoot) {
@@ -71,6 +74,14 @@ class App extends Component {
 			fbRoot.id = 'fb-root';
 			document.body.appendChild(fbRoot);
 		}
+	}
+
+	initCloudinary() {
+		cloudinary.config({
+			cloud_name: 'julsgc',
+			api_key: '794939881876669',
+			api_secret: 'RRNCr0MJmmca-Lf4i9A2CoNuxZ4'
+		});
 	}
 
 	setFbAsyncInit() {
