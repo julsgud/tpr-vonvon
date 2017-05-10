@@ -5,8 +5,9 @@ import Loading from 'react-loading';
 import axios from 'axios';
 import styled from 'styled-components';
 import update from 'immutability-helper';
+import cloudinary from 'cloudinary';
 
-import Share from 'components/Share';
+import FacebookShare from 'components/FacebookShare';
 
 import palette from 'palette';
 import {getFirstAnalysis, getSecondAnalysis} from 'requests';
@@ -41,6 +42,7 @@ class Process extends Component {
 			image: null,
 			imageBlob: null,
 			finalBlob: null,
+			finalImage: null,
 			imageSource: null,
 			imageAnalysis: null,
 			imageAnalysis2: null,
@@ -51,7 +53,6 @@ class Process extends Component {
 			secondAnalysis: false,
 			creature: null,
 			gender: null,
-			likes: null,
 			canvas: {},
 			frame: {}
 		};
@@ -151,7 +152,7 @@ class Process extends Component {
 			secondAnalysis: {$set: true}
 		});
 		this.setState(newState, () => {
-			console.log(this.state);
+			// console.log(this.state);
 		});
 	}
 
@@ -369,11 +370,18 @@ class Process extends Component {
 		const getFinalBlob = () => {
 			const png = c2.toDataURL();
 
-			const newState = update(this.state, {
-				finalBlob: {$set: png},
-				loading: {$set: false}
+			return cloudinary.uploader.upload(png, (response) => {
+				// console.log(response);
+				const imgUrl = response.secure_url;
+
+				const newState = update(this.state, {
+					finalImage: {$set: imgUrl},
+					loading: {$set: false}
+				});
+				return this.setState(newState, () => {
+					console.log(this.state);
+				});
 			});
-			this.setState(newState);
 		}
 
 		const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
@@ -547,14 +555,19 @@ class Process extends Component {
 			);
 		} else {
 			const description = getCreatureDescription(this.state.creature, this.props.user.gender);
+			const title = this.getFirstName(this.props.user.name) + ', te pareces ' + this.state.creature.title;
+			const titleFB = this.getFirstName(this.props.user.name) + ' se parece ' + this.state.creature.title;
 
 			return (
 				<Row center='xs'>
 					<Col xs={12}>
-						<h3> {this.getFirstName(this.props.user.name)}, te pareces {this.state.creature.title} </h3>
+						<h3> {title} </h3>
 					</Col>
 					<Col xs={12}>
-						<Img src={this.state.finalBlob}></Img>
+						<Img id="i" src={this.state.finalImage}></Img>
+					</Col>
+					<Col xs={6}>
+						<FacebookShare title={titleFB} image={this.state.finalImage}/>
 					</Col>
 					<Col xs={12}>
 						<P> {description} </P>

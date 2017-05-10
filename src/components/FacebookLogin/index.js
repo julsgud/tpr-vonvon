@@ -225,7 +225,7 @@ class FacebookLogin extends React.Component {
 			<Button type={typeButton} onClick={this.click}>
 				{textButton}
 			</Button>
-		)
+		);
 	}
 }
 

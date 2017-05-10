@@ -31,12 +31,10 @@ export default class FacebookLike extends Component {
 	render() {
 		const {href, layout, action, size, share, showFaces, reference, width, colorscheme, kidDirectedSite} = this.props;
 		if (!this.props.sdkLoaded) {
-			console.log('fb-like-no-render');
 			return(
 				<div></div>
 			);
 		} else {
-			console.log('fb-like-do-render');
 			return (
 				<div 
 					className="fb-like"
