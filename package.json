@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --hot --inline",
-    "dev": "webpack-dev-server --hot --inline --history-api-fallback",
+    "dev": "webpack-dev-server --hot --host 192.168.1.79 --inline --history-api-fallback",
     "build": "webpack -p"
   },
   "dependencies": {

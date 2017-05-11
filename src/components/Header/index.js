@@ -24,7 +24,7 @@ export default class Header extends Component {
 			<div>
 				<Row bottom='xs' middle='xs' center='xs'>
 					<Col xs={12}>
-						<Img src="http://res.cloudinary.com/julsgc/image/upload/v1494274636/banner_title.png"></Img>
+						<Img src="https://res.cloudinary.com/julsgc/image/upload/v1494274636/banner_title.png"></Img>
 					</Col>
 					<Col xs={6}>
 						<FacebookLike sdkLoaded={this.props.sdkLoaded} href="https://www.facebook.com/theplasticsrevolutionmx"/>
