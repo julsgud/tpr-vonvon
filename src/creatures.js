@@ -204,16 +204,16 @@ export const getStarUrl = (index) => {
 
 	switch(index) {
 		case 0:
-			url = 'http://res.cloudinary.com/julsgc/image/upload/v1494002002/star1.png';
+			url = 'https://res.cloudinary.com/julsgc/image/upload/v1494002002/star1.png';
 		break;
 		case 1:
-			url = 'http://res.cloudinary.com/julsgc/image/upload/a_hflip.vflip/v1494002002/star1.png';
+			url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip.vflip/v1494002002/star1.png';
 		break;
 		case 2:
-			url = 'http://res.cloudinary.com/julsgc/image/upload/c_scale,w_54/v1494002002/star2.png'
+			url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,w_54/v1494002002/star2.png'
 		break;
 		case 3:
-			url = 'http://res.cloudinary.com/julsgc/image/upload/a_hflip.vflip,c_scale,w_54/v1494002002/star2.png';
+			url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip.vflip,c_scale,w_54/v1494002002/star2.png';
 		break;
 	}
 
