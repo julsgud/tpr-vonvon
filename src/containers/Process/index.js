@@ -70,8 +70,8 @@ class Process extends Component {
 
 		const i = this.findLargestImage();
 
-		// const cr = pickCreature(getRandomBetween(0, 4));
-		const cr = pickCreature(4);
+		const cr = pickCreature(getRandomBetween(0, 4));
+		// const cr = pickCreature(4);
 		this.props.songHandler(cr.song);
 
 		const g = this.props.user.gender;
