@@ -28,10 +28,10 @@ export const pickCreature = (index) => {
 			o.name = 'rey';
 			o.code = 'v1493051207';
 			o.objectCount = 2;
-			o.object1code = 'v1493688916';
+			o.object1code = 'v1495064910';
 			o.object1 = 'rey_lentes';
-			o.object2code = 'v1493688916';
-			o.object2 = 'rey_espada';
+			o.object2code = 'v1495064910';
+			o.object2 = 'rey_boca';
 			o.title = 'al #ReyExtraordinario!';
 			o.song = 'spotify:track:1t5ZZxitYzzka5BisJLVXf';
 		break;
@@ -41,8 +41,8 @@ export const pickCreature = (index) => {
 			o.objectCount = 3;
 			o.object1code = 'v1493688916';
 			o.object1 = 'as_ojo';
-			o.object2code = 'v1493688917';
-			o.object2 = 'as_patineta';
+			o.object2code = 'v1495064910';
+			o.object2 = 'as_boca';
 			o.title = 'al #AdolescenteExtraordinario!'
 			o.song = 'spotify:track:6vZEVXjT421LTSrrbtVUcd';
 		break;
@@ -50,7 +50,7 @@ export const pickCreature = (index) => {
 			o.name = 'joker';
 			o.code = 'v1493051209';
 			o.objectCount = 3;
-			o.object1code = 'v1493688915';
+			o.object1code = 'v1495498133';
 			o.object1 = 'joker_ojo';
 			o.object2code = 'v1493688916';
 			o.object2 = 'joker_boca';
@@ -73,6 +73,7 @@ export const getCreatureUrl = (size, code, name) => {
 export const getObjectUrl = (objectIndex, face, creature, frame) => {
 	let url = '';
 	let size, rotation;
+
 	switch(creature.name) {
 		case 'joto':
 			if (objectIndex === 0) {
@@ -133,13 +134,17 @@ export const getObjectUrl = (objectIndex, face, creature, frame) => {
 					url = url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
 				}
 			} else {
-					size = (face.height*.85).toFixed(0);
+				if (face.attributes.lips == 'Apart') {
+					size = (face.width*.85).toFixed(0);
+				} else {
+					size = (face.width*.80).toFixed(0);
+				}
 				if (face.roll < 0) {
-					rotation = -12;
-					rotation += face.roll/2;
+					rotation = 7;
+					rotation += face.roll;
 					url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
 				} else {
-					rotation = 12;
+					rotation = -7;
 					rotation -= face.roll;
 					url = 'https://res.cloudinary.com/julsgc/image/upload/c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object2code + '/' + creature.object2 + '.png';
 				}
@@ -157,7 +162,7 @@ export const getObjectUrl = (objectIndex, face, creature, frame) => {
 				if (rotation < 0) rotation = 360 + face.roll + 3;
 				url = 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/a_' + rotation + '/' + creature.object1code + '/' + creature.object1 + '.png';
 			} else {
-				size = (face.height*.7).toFixed(0);
+				size = (face.height*.55).toFixed(0);
 				if (face.roll < 0) {
 					rotation = 12;
 					rotation += Math.abs(face.roll);
@@ -326,4 +331,144 @@ export const getCreatureDescription = (creature, gender) => {
 	}
 
 	return str;
-}
+};
+
+export const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
+	let o = {};
+
+	switch(creature.name) {
+		case 'joto':
+			if (objectIndex === 0) {
+				// check size of face against object before drawing
+				let middleOfFaceX = face.topLeftX + face.width/2;
+				let middleOfFaceY = face.topLeftY + face.height/2;
+				// source
+				o.x = face.rightEyeCenterX - obj.naturalWidth*.30;
+				o.y = face.rightEyeCenterY - obj.naturalHeight*.70;
+				o.w = obj.naturalWidth;
+				o.h = obj.naturalHeight;
+			} else {
+				let mouthX = face.chinTipX;
+				let mouthY = face.chinTipY - face.height/3.8;
+				o.x = mouthX - obj.naturalWidth/2;
+				o.y = mouthY - obj.naturalHeight*.55;
+
+				if (face.attributes.lips == 'Apart') {
+					o.y = mouthY - obj.naturalHeight*.60;
+				}
+			}
+		break;
+		case 'queena':
+			if (objectIndex === 0) {
+				o.x = face.rightEyeCenterX - obj.naturalWidth*.60;
+				o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+
+				if (face.pitch != 0) {
+					o.x = face.rightEyeCenterX - obj.naturalWidth*.60 + face.pitch/3;
+					o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+				}
+
+			} else if (objectIndex === 1) {
+				o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
+				o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+
+				if (face.pitch != 0) {
+					o.x = face.leftEyeCenterX - obj.naturalWidth*.40 + face.pitch/3;
+					o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+				}
+			} else {
+				let middleOfFaceX = face.topLeftX + face.width/2;
+				let middleOfFaceY = face.topLeftY + face.height/2;
+				o.x = middleOfFaceX - obj.naturalWidth*.62;
+				o.y = middleOfFaceY - obj.naturalHeight*.85;
+
+				if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.50;
+				if (face.pitch != 0) o.x += face.pitch/4;
+			}
+		break;
+		case 'rey':
+			if (objectIndex === 0) {
+				let middleOfFaceX = face.topLeftX + face.width/2;
+				let middleOfFaceY = face.topLeftY + face.height/2;
+				o.x = middleOfFaceX - obj.naturalWidth*.42;
+				o.y = middleOfFaceY - obj.naturalHeight*.94;
+
+				if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.60;
+				if (face.pitch < 0) o.y = middleOfFaceY - obj.naturalHeight*.97
+
+			} else if (objectIndex === 1) {
+				o.x = face.chinTipX - obj.naturalWidth*.50;
+				o.y = face.chinTipY - obj.naturalHeight*1.20;
+
+				if (face.attributes.lips == 'Apart') {
+					o.y = face.chinTipY - obj.naturalHeight*1.22;					
+				}
+			} 
+		break;
+		case 'as':
+			if (objectIndex === 0) {
+				o.x = face.rightEyeCenterX - obj.naturalWidth*.50;
+				o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+
+				if (face.pitch != 0) {
+					o.x = face.rightEyeCenterX - obj.naturalWidth*.55 + face.pitch/3;
+					o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
+				}
+			} else if (objectIndex === 1) {
+				o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
+				o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
+
+				if (face.pitch != 0) {
+					o.x = face.leftEyeCenterX - obj.naturalWidth*.45 + face.pitch/3;
+					o.y = face.leftEyeCenterY - obj.naturalHeight*.5;
+				}
+			} else {
+				o.x = face.chinTipX - obj.naturalWidth*.5;
+				o.y = face.chinTipY - obj.naturalHeight;
+
+				if (face.yaw > 0) {
+					o.x = face.chinTipX - obj.naturalWidth*.45;
+				} else if (face.yaw < 0) {
+					o.x = face.chinTipX - obj.naturalWidth*.55;
+				}
+
+				if (face.attributes.lips == 'Apart') {
+					o.y = face.chinTipY - obj.naturalHeight;					
+				}
+			}				
+		break;
+		case 'joker':
+			if (objectIndex === 0) {
+				o.x = face.rightEyeCenterX - obj.naturalWidth*.45;
+				o.y = face.rightEyeCenterY - obj.naturalHeight*.69;
+
+				if (face.pitch != 0) {
+					o.x = face.rightEyeCenterX - obj.naturalWidth*.45;
+					o.y = face.rightEyeCenterY - obj.naturalHeight*.69;
+				}
+
+			} else if (objectIndex === 1) {
+				o.x = face.leftEyeCenterX - obj.naturalWidth*.35;
+				o.y = face.leftEyeCenterY - obj.naturalHeight*.69;
+
+				if (face.pitch != 0) {
+					o.x = face.leftEyeCenterX - obj.naturalWidth*.45;
+					o.y = face.leftEyeCenterY - obj.naturalHeight*.69;
+				}
+			} else {
+				let mouthX = face.chinTipX;
+				let mouthY = face.chinTipY - face.height/3.3;
+				o.x = mouthX - obj.naturalWidth*.48;
+				o.y = mouthY - obj.naturalHeight*.60;
+
+				if (face.attributes.lips == 'Apart') {
+					o.y = mouthY - obj.naturalHeight*.65;
+				}
+
+				if (face.roll != 0) o.x += face.roll;
+			}
+		break;
+	}
+
+	return o;
+};

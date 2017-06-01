@@ -11,7 +11,7 @@ import FacebookShare from 'components/FacebookShare';
 
 import palette from 'palette';
 import {getFirstAnalysis, getSecondAnalysis} from 'requests';
-import {pickCreature, getCreatureUrl, getObjectUrl, getStarUrl, getCreatureHelpers, getCreatureDescription} from 'creatures';
+import {pickCreature, getCreatureUrl, getObjectUrl, getStarUrl, getCreatureHelpers, getCreatureDescription, getObjectHelpers} from 'creatures';
 import {findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
 const Img = styled.img`
@@ -70,8 +70,8 @@ class Process extends Component {
 
 		const i = this.findLargestImage();
 
-		const cr = pickCreature(getRandomBetween(0, 4));
-		// const cr = pickCreature(1);
+		// const cr = pickCreature(getRandomBetween(0, 4));
+		const cr = pickCreature(4);
 		this.props.songHandler(cr.song);
 
 		const g = this.props.user.gender;
@@ -301,12 +301,15 @@ class Process extends Component {
 	drawCanvasWithObjects() {
 		const {canvas, frame, imageAnalysis2, imageBlob, creature} = this.state;
 		let middleFace;
+
 		for (let i = 0; i < imageAnalysis2.faces.length; i++) {
 			if (imageAnalysis2.faces[i].chinTipX > 300) {
 				middleFace = imageAnalysis2.faces[i];
 				break;
 			}
 		}
+
+		console.log(middleFace);
 		
 		const c = document.getElementById('c2');
 		c.width = canvas.width;
@@ -370,153 +373,30 @@ class Process extends Component {
 		const getFinalBlob = () => {
 			const png = c2.toDataURL();
 
-			return cloudinary.uploader.upload(png, (response) => {
-				// console.log(response);
-				const imgUrl = response.secure_url;
-
-				const newState = update(this.state, {
-					finalImage: {$set: imgUrl},
-					loading: {$set: false}
-				});
-				return this.setState(newState, () => {
-					console.log(this.state);
-				});
+			const newState = update(this.state, {
+				finalImage: {$set: png},
+				loading: {$set: false}
 			});
+
+			return this.setState(newState, () => {
+				// console.log(this.state);
+			});
+
+			// return cloudinary.uploader.upload(png, (response) => {
+			// 	// console.log(response);
+			// 	const imgUrl = response.secure_url;
+
+			// 	const newState = update(this.state, {
+			// 		finalImage: {$set: imgUrl},
+			// 		loading: {$set: false}
+			// 	});
+			// 	return this.setState(newState, () => {
+			// 		console.log(this.state);
+			// 	});
+			// });
 		}
 
-		const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
-			let o = {};
-
-			switch(creature.name) {
-				case 'joto':
-					if (objectIndex === 0) {
-						// check size of face against object before drawing
-						let middleOfFaceX = face.topLeftX + face.width/2;
-						let middleOfFaceY = face.topLeftY + face.height/2;
-						// source
-						o.x = face.rightEyeCenterX - obj.naturalWidth*.30;
-						o.y = face.rightEyeCenterY - obj.naturalHeight*.70;
-						o.w = obj.naturalWidth;
-						o.h = obj.naturalHeight;
-					} else {
-						let mouthX = face.chinTipX;
-						let mouthY = face.chinTipY - face.height/3.8;
-						o.x = mouthX - obj.naturalWidth/2;
-						o.y = mouthY - obj.naturalHeight*.55;
-
-						if (face.attributes.lips == 'Apart') {
-							o.y = mouthY - obj.naturalHeight*.60;
-						}
-					}
-				break;
-				case 'queena':
-					if (objectIndex === 0) {
-						o.x = face.rightEyeCenterX - obj.naturalWidth*.60;
-						o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
-
-						if (face.pitch != 0) {
-							o.x = face.rightEyeCenterX - obj.naturalWidth*.60 + face.pitch/3;
-							o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
-						}
-
-					} else if (objectIndex === 1) {
-						o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
-						o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
-
-						if (face.pitch != 0) {
-							o.x = face.leftEyeCenterX - obj.naturalWidth*.40 + face.pitch/3;
-							o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
-						}
-					} else {
-						let middleOfFaceX = face.topLeftX + face.width/2;
-						let middleOfFaceY = face.topLeftY + face.height/2;
-						o.x = middleOfFaceX - obj.naturalWidth*.62;
-						o.y = middleOfFaceY - obj.naturalHeight*.85;
-
-						if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.50;
-						if (face.pitch != 0) o.x += face.pitch/4;
-					}
-				break;
-				case 'rey':
-					if (objectIndex === 0) {
-						let middleOfFaceX = face.topLeftX + face.width/2;
-						let middleOfFaceY = face.topLeftY + face.height/2;
-						o.x = middleOfFaceX - obj.naturalWidth*.46;
-						o.y = middleOfFaceY - obj.naturalHeight*.94;
-
-						if (face.roll < 0) o.x = middleOfFaceX - obj.naturalWidth*.56;
-						if (face.pitch < 0) o.y = middleOfFaceY - obj.naturalHeight*.97
-
-					} else if (objectIndex === 1) {
-						o.x = face.chinTipX - obj.naturalWidth*.40;
-						o.y = face.chinTipY - obj.naturalHeight*.30;
-					} 
-				break;
-				case 'as':
-					if (objectIndex === 0) {
-						o.x = face.rightEyeCenterX - obj.naturalWidth*.50;
-						o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
-
-						if (face.pitch != 0) {
-							o.x = face.rightEyeCenterX - obj.naturalWidth*.55 + face.pitch/3;
-							o.y = face.rightEyeCenterY - obj.naturalHeight*.50;
-						}
-					} else if (objectIndex === 1) {
-						o.x = face.leftEyeCenterX - obj.naturalWidth*.40;
-						o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
-
-						if (face.pitch != 0) {
-							o.x = face.leftEyeCenterX - obj.naturalWidth*.40 + face.pitch/3;
-							o.y = face.leftEyeCenterY - obj.naturalHeight*.50;
-						}
-					} else {
-						if (face.roll < 0) {
-							o.x = face.chinTipX - obj.naturalWidth*.30;
-						} else {
-							o.x = face.chinTipX - obj.naturalWidth*.85;
-						}
-						o.y = face.chinTipY - obj.naturalHeight*.20;
-
-						if (o.y + obj.naturalHeight/2 > frame.height) {
-							o.y -= obj.naturalHeight/4;
-						}
-					}				
-				break;
-				case 'joker':
-					if (objectIndex === 0) {
-						o.x = face.rightEyeCenterX - obj.naturalWidth*.45;
-						o.y = face.rightEyeCenterY - obj.naturalHeight*.69;
-
-						if (face.pitch != 0) {
-							o.x = face.rightEyeCenterX - obj.naturalWidth*.45 + face.pitch/3;
-							o.y = face.rightEyeCenterY - obj.naturalHeight*.69;
-						}
-
-					} else if (objectIndex === 1) {
-						o.x = face.leftEyeCenterX - obj.naturalWidth*.35;
-						o.y = face.leftEyeCenterY - obj.naturalHeight*.69;
-
-						if (face.pitch != 0) {
-							o.x = face.leftEyeCenterX - obj.naturalWidth*.35 + face.pitch/3;
-							o.y = face.leftEyeCenterY - obj.naturalHeight*.69;
-						}
-					} else {
-						let mouthX = face.chinTipX;
-						let mouthY = face.chinTipY - face.height/3.3;
-						o.x = mouthX - obj.naturalWidth*.48;
-						o.y = mouthY - obj.naturalHeight*.60;
-
-						if (face.attributes.lips == 'Apart') {
-							o.y = mouthY - obj.naturalHeight*.65;
-						}
-
-						if (face.roll != 0) o.x += face.roll;
-					}
-				break;
-			}
-
-			return o;
-		}
+		
 
 		loadImage1();
 	}
