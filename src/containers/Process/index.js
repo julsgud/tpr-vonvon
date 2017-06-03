@@ -301,9 +301,11 @@ class Process extends Component {
 	drawCanvasWithObjects() {
 		const {canvas, frame, imageAnalysis2, imageBlob, creature} = this.state;
 		let middleFace;
+		console.log(imageAnalysis2);
 
 		for (let i = 0; i < imageAnalysis2.faces.length; i++) {
 			if (imageAnalysis2.faces[i].chinTipX > 300) {
+				console.log(imageAnalysis2.faces[i]);
 				middleFace = imageAnalysis2.faces[i];
 				break;
 			}
