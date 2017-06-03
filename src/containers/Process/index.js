@@ -423,7 +423,7 @@ class Process extends Component {
 						<Loading type='bubbles' color={palette.red}/>
 					</Col>
 					<Col xs={12}>
-						<HiddenCanvas id="c"></HiddenCanvas>
+						<canvas id="c"></canvas>
 					</Col>
 				</Row>
 			);
@@ -434,7 +434,7 @@ class Process extends Component {
 						<Loading type='bubbles' color={palette.red}/>
 					</Col>
 					<Col xs={12}>
-						<HiddenCanvas id="c2"></HiddenCanvas>
+						<canvas id="c2"></canvas>
 					</Col>
 				</Row>
 			);
