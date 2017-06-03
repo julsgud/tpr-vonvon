@@ -309,7 +309,7 @@ class Process extends Component {
 			}
 		}
 
-		console.log(middleFace);
+		console.log('***** log 1 - ' + middleFace);
 		
 		const c = document.getElementById('c2');
 		c.width = canvas.width;

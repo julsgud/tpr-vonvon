@@ -73,6 +73,7 @@ export const getCreatureUrl = (size, code, name) => {
 export const getObjectUrl = (objectIndex, face, creature, frame) => {
 	let url = '';
 	let size, rotation;
+	console.log('***** log 0 - ' + face);
 
 	switch(creature.name) {
 		case 'joto':

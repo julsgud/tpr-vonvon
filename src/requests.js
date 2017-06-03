@@ -34,6 +34,7 @@ export const getSecondAnalysis = (image, KAIROS_ID, KAIROS_KEY, handleResponse, 
 		}
 	}).then((response) => {			
 		checkForAnalysisErrors(response, errorHandler, history);
+		console.log('***** log 2 - ' + response.data.images[0]);
 		return handleResponse(response.data.images[0]);
 	}).catch((error) => {
 		console.error(error);
