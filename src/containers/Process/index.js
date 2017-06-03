@@ -304,9 +304,12 @@ class Process extends Component {
 		console.log(imageAnalysis2);
 
 		for (let i = 0; i < imageAnalysis2.faces.length; i++) {
+			console.log('in loop');
 			if (imageAnalysis2.faces[i].chinTipX > 300) {
+				console.log('in conditional');
 				console.log(imageAnalysis2.faces[i]);
 				middleFace = imageAnalysis2.faces[i];
+				console.log(middleFace);
 				break;
 			}
 		}
