@@ -7,7 +7,7 @@ import Spotify from 'react-spotify-player';
 
 const A = styled.a`
 	color: ${palette.red};
-	size: 10px;
+	size: 4px;
 	text-decoration: none;
 `;
 
@@ -32,6 +32,7 @@ export default class Footer extends Component {
 				  		theme={theme}
 				  	/>
 		  		</Col>
+		  		<Col> <A href="https://termsfeed.com/privacy-policy/54cb5723bfac5aaec975d816662b8a37"> ◕ ◡ ◕ </A> </Col>
 			</Row>
 		);
 	}
