@@ -192,6 +192,11 @@ class Process extends Component {
 			'y': yMargin
 		}
 
+		console.log('** frames');
+		console.log('1. ' + frame1);
+		console.log('2. ' + frame2);
+		console.log('3. ' + frame3);
+
 		// user, creature and object1 & 2 scale helpers
 		let uh = {};
 		let uh2 = {};
