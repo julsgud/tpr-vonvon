@@ -15,7 +15,7 @@ const H3 = styled.h3`
 
 const Img = styled.img`
 	max-width: 100%;
-	min-height: 100%;
+	/*min-height: 100%;*/
 `;
 
 export default class Header extends Component {
