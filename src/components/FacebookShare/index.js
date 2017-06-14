@@ -24,25 +24,22 @@ export default class FacebookShare extends Component {
 
 	componentDidMount() {
 		const {image} = this.props;
-
-
 	}
 
-	click = (image) => {
+	click = () => {
 		// window.URL = window.URL || window.webkitURL;
-		// const imgUrl = window.URL.createObjectURL(image);
 
-		// return window.FB.ui({
-		// 	method: 'feed',
-		// 	name: this.props.title,
-		// 	link: 'https://tprvonvon.com/',
-		// 	caption: 'The Plastics Revolution ~(˘▾˘~)',
-		// 	description: 'Y tu a cuál de los #SeresExtraordinarios te pareces?!',
-		// 	tags: ['#SeresExtraordinarios', '#ThePlasticsRevolution', '#TPRVONVON'],
-		// 	picture: this.props.image
-		// }, (response) => {
-		// 	console.log(response);
-		// });
+		return window.FB.ui({
+			method: 'feed',
+			name: this.props.title,
+			link: 'https://plasticsrev.club',
+			caption: 'The Plastics Revolution ~(˘▾˘~)',
+			description: 'Y tu a cuál de los #SeresExtraordinarios te pareces?!',
+			tags: ['#SeresExtraordinarios', '#ThePlasticsRevolution', '#TPRVONVON'],
+			picture: this.props.image
+		}, (response) => {
+			console.log(response);
+		});
 	}
 
 	render() {
