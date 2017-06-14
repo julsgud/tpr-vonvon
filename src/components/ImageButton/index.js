@@ -7,6 +7,15 @@ const Img = styled.img`
 	max-width: 150px;
 `;
 
+const Button = styled.button`
+	border: none;
+	outline: none;
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	background-position: center center;
+	margin: 0;
+`;
+
 class ImageButton extends React.Component {
 	constructor(props) {
 		super(props);
@@ -34,10 +43,10 @@ class ImageButton extends React.Component {
 
 	render() {
 		return(
-			<Col xs>
-				<button onClick={this.handleClick}>
+			<Col xs={6}>
+				<Button onClick={this.handleClick}>
 					<Img src={this.getImageThumbnailUrl(this.props.img)}></Img>
-				</button>
+				</Button>
 			</Col>
 		);
 	}
