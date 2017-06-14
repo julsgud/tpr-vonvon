@@ -160,8 +160,8 @@ class Process extends Component {
 		const {canvas, frame, imageAnalysis, imageSource, imageType, creature, image} = this.state;
 
 		const c = document.getElementById('c');
-		c.width = 800;
-		c.height = 450;
+		c.width = canvas.width;
+		c.height = canvas.height;
 		const ctx = c.getContext('2d');
 
 		// get width and height from state
@@ -191,11 +191,6 @@ class Process extends Component {
 			'x': (xMargin * 3) + (frameWidth * 2),
 			'y': yMargin
 		}
-
-		console.log('** frames');
-		console.log('1. ' + frame1);
-		console.log('2. ' + frame2);
-		console.log('3. ' + frame3);
 
 		// user, creature and object1 & 2 scale helpers
 		let uh = {};
@@ -252,6 +247,7 @@ class Process extends Component {
 			img3.src = getCreatureUrl(frameHeight.toFixed(0).toString(), creature.code, creature.name);
 		}
 
+		// star frame
 		const loadStar0 = () => {
 			star0.onload = () => {
 				loadStar1();
@@ -306,25 +302,20 @@ class Process extends Component {
 	drawCanvasWithObjects() {
 		const {canvas, frame, imageAnalysis2, imageBlob, creature} = this.state;
 		let middleFace;
-		console.log(imageAnalysis2);
+		// console.log(imageAnalysis2);
 
 		for (let i = 0; i < imageAnalysis2.faces.length; i++) {
-			console.log('in loop');
-			if (imageAnalysis2.faces[i].chinTipX > 300) {
-				console.log('in conditional');
-				console.log(imageAnalysis2.faces[i]);
+			if (imageAnalysis2.faces[i].chinTipX > 100) {
 				middleFace = imageAnalysis2.faces[i];
-				console.log(middleFace);
 				break;
 			}
 		}
-
-		console.log('***** log 1 - ' + middleFace);
 		
 		const c = document.getElementById('c2');
 		c.width = canvas.width;
 		c.height = canvas.height;
 		const ctx = c.getContext('2d');
+		console.log(c.width + ' ' + c.height);
 
 		// helpers objs
 		let oh1 = {};
@@ -342,6 +333,7 @@ class Process extends Component {
 			img.onload = () =>  {
 				loadObj1();
 		    	ctx.drawImage(img, 0, 0, c.width, c.height);
+		    	console.log(img.naturalWidth + ' ' + img.naturalHeight);
 			};
 			img.crossOrigin="anonymous";
 			img.src = imageBlob;
@@ -383,27 +375,27 @@ class Process extends Component {
 		const getFinalBlob = () => {
 			const png = c2.toDataURL();
 
-			const newState = update(this.state, {
-				finalImage: {$set: png},
-				loading: {$set: false}
-			});
-
-			return this.setState(newState, () => {
-				// console.log(this.state);
-			});
-
-			// return cloudinary.uploader.upload(png, (response) => {
-			// 	// console.log(response);
-			// 	const imgUrl = response.secure_url;
-
-			// 	const newState = update(this.state, {
-			// 		finalImage: {$set: imgUrl},
-			// 		loading: {$set: false}
-			// 	});
-			// 	return this.setState(newState, () => {
-			// 		console.log(this.state);
-			// 	});
+			// const newState = update(this.state, {
+			// 	finalImage: {$set: png},
+			// 	loading: {$set: false}
 			// });
+
+			// return this.setState(newState, () => {
+			// 	// console.log(this.state);
+			// });
+
+			return cloudinary.uploader.upload(png, (response) => {
+				// console.log(response);
+				const imgUrl = response.secure_url;
+
+				const newState = update(this.state, {
+					finalImage: {$set: imgUrl},
+					loading: {$set: false}
+				});
+				return this.setState(newState, () => {
+					console.log(this.state);
+				});
+			});
 		}
 
 		
@@ -428,7 +420,7 @@ class Process extends Component {
 						<Loading type='bubbles' color={palette.red}/>
 					</Col>
 					<Col xs={12}>
-						<canvas id="c"></canvas>
+						<HiddenCanvas id="c"></HiddenCanvas>
 					</Col>
 				</Row>
 			);
@@ -439,7 +431,7 @@ class Process extends Component {
 						<Loading type='bubbles' color={palette.red}/>
 					</Col>
 					<Col xs={12}>
-						<canvas id="c2"></canvas>
+						<HiddenCanvas id="c2"></HiddenCanvas>
 					</Col>
 				</Row>
 			);
