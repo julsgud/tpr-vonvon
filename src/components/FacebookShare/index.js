@@ -16,7 +16,7 @@ const Button = styled.button`
 	display: none;
 `;
 
-const sButton = styled.button`
+const Button2 = styled.button`
 	background: #2d41a3;
 	color: #fff;
 	font-size: 18px;
@@ -30,11 +30,9 @@ const sButton = styled.button`
 	/*display: none;*/
 `;
 
-
-
 export default class FacebookShare extends Component {
 	static defaultProps = {
-		textButton: 'Comparte en FB! ;)',
+		textButton: 'Comparte en FB!',
 		typeButton: 'button'
 	}
 
@@ -64,9 +62,9 @@ export default class FacebookShare extends Component {
 		if (this.props.isSafari) {
 			console.log('saf');
 			return(
-				<sButton type={typeButton} onClick={this.click()}>
+				<Button2 type={typeButton} onClick={this.click()}>
 					{textButton}
-				</sButton>
+				</Button2>
 			);
 		} else {
 			console.log('noSaf');
