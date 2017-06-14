@@ -1,3 +1,17 @@
+export const isSafari = () => {
+	let ua = navigator.userAgent.toLowerCase(); 
+	console.log(ua);
+	if (ua.indexOf('safari') != -1) { 
+	  if (ua.indexOf('chrome') > -1) {
+	    return false; 
+	    // alert("1") // Chrome
+	  } else {
+	    return true;
+	    // alert("2") // Safari
+	  }
+	}
+}
+
 export const findCanvasDimensions = () => {
 	let c = {};
 

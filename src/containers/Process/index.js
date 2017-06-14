@@ -12,7 +12,7 @@ import FacebookShare from 'components/FacebookShare';
 import palette from 'palette';
 import {getFirstAnalysis, getSecondAnalysis} from 'requests';
 import {pickCreature, getCreatureUrl, getObjectUrl, getStarUrl, getCreatureHelpers, getCreatureDescription, getObjectHelpers} from 'creatures';
-import {findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
+import {isSafari, findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
 const Img = styled.img`
 	max-width: 100%;
@@ -315,7 +315,6 @@ class Process extends Component {
 		c.width = canvas.width;
 		c.height = canvas.height;
 		const ctx = c.getContext('2d');
-		console.log(c.width + ' ' + c.height);
 
 		// helpers objs
 		let oh1 = {};
@@ -333,7 +332,6 @@ class Process extends Component {
 			img.onload = () =>  {
 				loadObj1();
 		    	ctx.drawImage(img, 0, 0, c.width, c.height);
-		    	console.log(img.naturalWidth + ' ' + img.naturalHeight);
 			};
 			img.crossOrigin="anonymous";
 			img.src = imageBlob;
@@ -439,6 +437,7 @@ class Process extends Component {
 			const description = getCreatureDescription(this.state.creature, this.props.user.gender);
 			const title = this.getFirstName(this.props.user.name) + ', te pareces ' + this.state.creature.title;
 			const titleFB = this.getFirstName(this.props.user.name) + ' se parece ' + this.state.creature.title;
+			const safariBool = isSafari();
 
 			return (
 				<Row center='xs'>
@@ -448,11 +447,11 @@ class Process extends Component {
 					<Col xs={12}>
 						<Img id="i" src={this.state.finalImage}></Img>
 					</Col>
-					<Col xs={6}>
-						<FacebookShare title={titleFB} image={this.state.finalImage}/>
-					</Col>
 					<Col xs={12}>
 						<P> {description} </P>
+					</Col>
+					<Col xs={6}>
+						<FacebookShare isSafari={safariBool} title={titleFB} image={this.state.finalImage}/>
 					</Col>
 				</Row>
 			);
