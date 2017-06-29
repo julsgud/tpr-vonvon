@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 
 import styled from 'styled-components';
 
+import palette from 'palette';
+
 const Button = styled.button`
 	background: #2d41a3;
 	color: #fff;
@@ -28,6 +30,10 @@ const Button2 = styled.button`
 	white-space: nowrap;
 	/*border-radius: 5px;*/
 	/*display: none;*/
+`;
+
+const P = styled.p`
+	color: #f31c21;
 `;
 
 export default class FacebookShare extends Component {
@@ -62,9 +68,7 @@ export default class FacebookShare extends Component {
 		if (this.props.isSafari) {
 			console.log('saf');
 			return(
-				<Button2 type={typeButton} onClick={this.click()}>
-					{textButton}
-				</Button2>
+				<P> (☞ﾟヮﾟ)☞ Descarga tu imagen y compártela en Facebook! ☜(ﾟヮﾟ☜) </P>
 			);
 		} else {
 			console.log('noSaf');
