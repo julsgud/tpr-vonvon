@@ -58,7 +58,7 @@ export default class FacebookShare extends Component {
 			tags: ['#SeresExtraordinarios', '#ThePlasticsRevolution', '#TPRVONVON'],
 			picture: this.props.image
 		}, (response) => {
-			console.log(response);
+			// console.log(response);
 		});
 	}
 
@@ -66,12 +66,12 @@ export default class FacebookShare extends Component {
 		const {typeButton, textButton} = this.props;
 
 		if (this.props.isSafari) {
-			console.log('saf');
+			// console.log('saf');
 			return(
 				<P> (☞ﾟヮﾟ)☞ Descarga tu imagen y compártela en Facebook! ☜(ﾟヮﾟ☜) </P>
 			);
 		} else {
-			console.log('noSaf');
+			// console.log('noSaf');
 			return(
 				<Button type={typeButton} onClick={this.click()}>
 					{textButton}
