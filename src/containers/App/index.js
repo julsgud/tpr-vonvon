@@ -11,7 +11,6 @@ import Footer from 'components/Footer';
 import Home from 'containers/Home';
 import Select from 'containers/Select';
 import Process from 'containers/Process';
-import Privacy from 'containers/Privacy';
 
 import cloudinary from 'cloudinary';
 
@@ -207,7 +206,6 @@ class App extends Component {
 									history={history}
 								/>
 							}/>
-							<Route exact path='privacy' component={Privacy}/>
 						</div>
 					<Footer playThis={this.state.music}/>
 				</AppWrapper>
