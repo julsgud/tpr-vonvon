@@ -68,7 +68,7 @@ export default class FacebookShare extends Component {
 		if (this.props.isSafari) {
 			// console.log('saf');
 			return(
-				<P> (☞ﾟヮﾟ)☞ Descarga tu imagen y compártela en Facebook! ☜(ﾟヮﾟ☜) </P>
+				<P> (☞ﾟヮﾟ)☞ Haz click en tu imagen para salvarla y compártela en Facebook! ☜(ﾟヮﾟ☜) </P>
 			);
 		} else {
 			// console.log('noSaf');
