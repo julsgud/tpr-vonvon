@@ -1,6 +1,6 @@
 export const isSafari = () => {
 	let ua = navigator.userAgent.toLowerCase(); 
-	console.log(ua);
+	// console.log(ua);
 	if (ua.indexOf('safari') != -1) { 
 	  if (ua.indexOf('chrome') > -1) {
 	    return false; 
@@ -123,7 +123,7 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// Corrections
 		// 1. If face is already large, keep it like in first frame
 		if (boxWidth >= frameWidth || boxHeight >= frameHeight || boxWidth >= frameWidth - boxWidth*.15 || boxHeight >= frameHeight - boxHeight*.15) {
-			console.warn('correction 1');
+			// console.warn('correction 1');
 			let newWidth = frameHeight * srcWidth / srcHeight;
 
 			s.w = frameWidth * srcWidth / newWidth;
@@ -139,7 +139,7 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// check if w or h of chunk is already large, to keep it like in first frame
 		if (boxWidth > srcWidth*.30 || boxHeight > srcHeight*.30) {
 			if (s.w >= srcWidth || s.h >= srcHeight || s.w >= srcWidth - (srcWidth*.15) || s.h >= (srcHeight*.15)) {
-				console.warn('correction 2');
+				// console.warn('correction 2');
 				let newWidth = frameHeight * srcWidth / srcHeight;
 
 				s.w = frameWidth * srcWidth / newWidth;
@@ -154,9 +154,9 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 
 		// 3. if negative cut points and box is less than half the chunk size, zoom in
 		if (boxWidth < s.w *.3 || boxHeight < s.h * .3) {
-			console.warn('correction 3');
+			// console.warn('correction 3');
 			let ratio = srcWidth/srcHeight;
-			console.log(ratio);
+			// console.log(ratio);
 
 			let xBuffer = .5 * (frameWidth - boxWidth);
 			let yBuffer = .5 * (frameHeight - boxHeight);
@@ -174,7 +174,7 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 
 		// 4. If negative margin after corrections, back to first frame
 		if (s.x < 0 || s.y < 0) {
-			console.warn('correction 4');
+			// console.warn('correction 4');
 			let newWidth = frameHeight * srcWidth / srcHeight;
 
 			s.w = frameWidth * srcWidth / newWidth;
@@ -224,7 +224,7 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// Corrections
 		// 1. If face is already large, keep it like in first frame
 		if (boxWidth >= frameWidth || boxHeight >= frameHeight || boxWidth >= frameWidth - boxWidth*.15 || boxHeight >= frameHeight - boxHeight*.15) {
-			console.warn('correction 1');
+			// console.warn('correction 1');
 			let newHeight = frameWidth * srcHeight / srcWidth;
 
 			// width of chunk
@@ -240,7 +240,7 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// check if w or h of chunk is already large, to keep it like in first frame
 		if (boxWidth > srcWidth*.30 || boxHeight > srcHeight*.30) {
 			if (s.w >= srcWidth || s.h >= srcHeight || s.w >= srcWidth - (srcWidth*.15) || s.h >= (srcHeight*.15)) {
-				console.warn('correction 2');
+				// console.warn('correction 2');
 				let newHeight = frameWidth * srcHeight / srcWidth;
 
 				// width of chunk
@@ -255,7 +255,7 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 
 		// 3. if negative cut points and box is less than half the chunk size, zoom in
 		if (boxWidth < s.w *.3 || boxHeight < s.h * .3) {
-			console.warn('correction 3');
+			// console.warn('correction 3');
 			let ratio = srcWidth/srcHeight;
 
 			let xBuffer = .5 * (frameWidth - boxWidth);
@@ -272,7 +272,7 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 
 		// 4. If negative margin after corrections, back to first frame
 		if (s.x < 0 || s.y < 0) {
-			console.warn('correction 4');
+			// console.warn('correction 4');
 			let newHeight = frameWidth * srcHeight / srcWidth;
 
 			// width of chunk

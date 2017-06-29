@@ -123,6 +123,7 @@ class Process extends Component {
 	}
 
 	componentDidMount() {
+		console.log('** 2 **: Mounted Process Component');
 		return getFirstAnalysis(this.state.imageSource, KAIROS_ID, KAIROS_KEY, this.handleFirstAnalysis, this.props.errorHandler, this.props.history);
 	}
 
@@ -391,7 +392,7 @@ class Process extends Component {
 					loading: {$set: false}
 				});
 				return this.setState(newState, () => {
-					console.log(this.state);
+					// console.log(this.state);
 				});
 			});
 		}

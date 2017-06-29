@@ -72,7 +72,6 @@ class Select extends Component {
 	}
 
 	loadedAllImages() {
-
 		this.setState({spinner: false});
 		console.log('** loaded all images **');
 	}
