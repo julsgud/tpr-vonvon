@@ -10,24 +10,22 @@ const Img = styled.img`
 	max-width: 100%;
 `;
 
-const H3 = styled.h3`
-	color: ${palette.black};
-`;
+const buttonStyle = {
+	marginBottom: '20px'
+}
 
 class Home extends Component {
+	componentDidMount() {
+		console.log('** 2 **: Mounted Home Component');
+	}
+
 	render() {
 		return(
-			<Row center='xs'>
+			<Row center='xs' around='xs' middle='xs'>
 				<Col xs={12}>
-					<Img src="https://res.cloudinary.com/julsgc/image/upload/v1491106020/Boletia_995x380__2_fqawa8.png"/>
+					<h3> A cuál de los #SeresExtraordinarios te pareces!? </h3>
 				</Col>
-				<Col xs={12}>
-					<h3> A que Ser Extraordinario te pareces!? </h3>
-				</Col>
-				<Col xs={12}>
-					<p> Averigualo ahora! </p>
-				</Col>
-				<Col>
+				<Col style={buttonStyle}>
 					<FacebookLogin 
 						infoCallback={this.props.infoHandler}
 						imageCallback={(data) => {
@@ -43,5 +41,6 @@ class Home extends Component {
 Home.propTypes = {
 	history: React.PropTypes.object
 }
+
 
 export default Home;

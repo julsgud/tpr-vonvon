@@ -1,5 +1,22 @@
 import React, {PropTypes} from 'react';
 
+import styled from 'styled-components';
+
+import palette from 'palette';
+
+const Button = styled.button`
+	background: #2d41a3;
+	color: #fff;
+	font-size: 18px;
+	width: 100%;
+	margin: 10px 20px 10px 0px;
+	border: 0px;
+	text-align: center;
+	line-height: 50px;
+	white-space: nowrap;
+	/*border-radius: 5px;*/
+`;
+
 const getIsMobile = () => {
 	let isMobile = false;
 
@@ -17,7 +34,7 @@ class FacebookLogin extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isSdkLoaded: false,
+			isSdkLoaded: true,
 			isProcessing: false
 		};
 	}
@@ -25,41 +42,41 @@ class FacebookLogin extends React.Component {
 	static defaultProps = {
 		appId: '1418273384901709',
 		autoLoad: 'false',
-		textButton: 'Continua con Facebook',
+		textButton: 'Averígualo ahora!',
 		typeButton: 'button',
 		redirectUri: typeof window !== 'undefined' ? window.location.href : '/',
-		scope: 'public_profile',
+		scope: 'public_profile, user_photos',
 		xfbml: false,
 		cookie: false,
 		reAuthenticate: false,
 		size: 'metro',
-		fields: 'name',
+		fields: 'name,gender,meeting_for',
 		version: '2.8',
 		language: 'en_US',
 		disableMobileRedirect: false,
-		isMobile: getIsMobile(),
-		tag: 'button',
+		isMobile: getIsMobile(), 
+		tag: 'Button',
 	};
 
 	static state = {
-		isSdkLoaded: false,
+		isSdkLoaded: true,
 		isProcessing: false,
 	};
 
 	componentDidMount() {
-		if (document.getElementById('facebook-jssdk')) {
-			this.sdkLoaded();
-			return;
-		}
-		this.setFbAsyncInit();
-		this.loadSdkAsynchronously();
-		let fbRoot = document.getElementById('fb-root');
-		if(!fbRoot) {
-			fbRoot = document.createElement('div');
-			fbRoot.id = 'fb-root';
-			document.body.appendChild(fbRoot);
-		}
-		this._isMounted = true;
+		// if (document.getElementById('facebook-jssdk')) {
+		// 	this.sdkLoaded();
+		// 	return;
+		// }
+		// this.setFbAsyncInit();
+		// this.loadSdkAsynchronously();
+		// let fbRoot = document.getElementById('fb-root');
+		// if(!fbRoot) {
+		// 	fbRoot = document.createElement('div');
+		// 	fbRoot.id = 'fb-root';
+		// 	document.body.appendChild(fbRoot);
+		// }
+		// this._isMounted = true;
 	}
 
 	componentWillUnmount() {
@@ -105,25 +122,61 @@ class FacebookLogin extends React.Component {
 	}
 
 	getInfo = (authResponse) => {
-		window.FB.api('/me', {fields: this.props.fields}, (me) => {
+		return window.FB.api('/me', {fields: 'name,gender,interested_in'}, (me) => {
 			Object.assign(me, authResponse);
-			this.props.infoCallback(me);
+			return this.props.infoCallback(me);
 		});
 	};
 
-	getLargeProfilePicture(authResponse) {
-		window.FB.api('/me/picture?type=large', (response) => {
-			this.props.imageCallback(response);
+	getAlbums(authResponse) {
+		let albumId;
+
+		return window.FB.api('/me/albums', (response) => {
+			response.data.forEach((a) => {
+				if (a.name === "Profile Pictures") {
+					albumId = a.id;
+				};
+			});
+			return this.getProfilePictureAlbum(albumId);
 		});
+	}
+
+	getProfilePictureAlbum(id) {
+		let images = [];
+
+		return window.FB.api('/' + id + '/photos', (response) => {
+			response.data.forEach((i) => {
+				images.push(i.id);
+			});
+			return this.props.imageCallback(images);
+		});
+	}
+
+	getProfilePictures(images) {
+		let collection = {};
+		let coll;
+		let fields = 'images';
+		let counter = 0;
+
+		return images.forEach((i) => {
+			window.FB.api('/' + i + '?fields=' + fields, (response) => {
+				collection['image-'+counter.toString()] = response;
+				console.log(response.images);
+				console.log(collection['image-'+counter]);
+				counter++; 
+			});
+		});
+		
+		return this.props.imageCallback(collection);
 	}
 
 	checkLoginState = (response) => {
 		this.setStateIfMounted({isProcessing: false});
 		if (response.authResponse) {
 			this.getInfo(response.authResponse);
-			this.getLargeProfilePicture(response.authResponse);
+			this.getAlbums(response.authResponse);
 		} else {
-			callback({status: response.status});
+			console.log({status: response.status});
 		}
 	};
 
@@ -169,10 +222,10 @@ class FacebookLogin extends React.Component {
 		const {typeButton, textButton} = this.props;
 
 		return (
-			<this.props.tag type={typeButton} onClick={this.click}>
+			<Button type={typeButton} onClick={this.click}>
 				{textButton}
-			</this.props.tag>
-		)
+			</Button>
+		);
 	}
 }
 

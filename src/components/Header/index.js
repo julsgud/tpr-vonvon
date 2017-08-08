@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import {Row, Col} from 'react-flexbox-grid';
-import IconLink from 'components/IconLink';
+
+import FacebookLike from 'components/FacebookLike';
 
 const H3 = styled.h3`
-	color: #f43449;
 	size: 32px;
 
 	&:hover {
@@ -13,33 +13,25 @@ const H3 = styled.h3`
 	}
 `;
 
-const StyledIconLink = styled(IconLink)`
-	color: #f43449;
-
-	&:hover {
-		color: #ff7e81;
-	}
+const Img = styled.img`
+	max-width: 100%;
+	/*min-height: 100%;*/
 `;
 
 export default class Header extends Component {
 	render() {
 		return (
-			<Row around='xs' middle='xs'>
-				<Col xs={6}>
-					<H3> The Plastics Revolution </H3>
-				</Col>
-				<Col xs={1}>
-					<StyledIconLink url="https://www.facebook.com/theplasticsrevolutionmx/" class="fa-facebook"/>
-				</Col>
-				<Col xs={1}>
-					<StyledIconLink url="https://twitter.com/plasticsrev/" class="fa-twitter"/>
-				</Col>
-				<Col xs={1}>
-					<StyledIconLink url="https://www.instagram.com/plasticsrevolution/" class="fa-instagram"/>
-				</Col>
-
-			 </Row>
-		)
+			<div>
+				<Row bottom='xs' middle='xs' center='xs'>
+					<Col xs={12}>
+						<Img src="https://res.cloudinary.com/julsgc/image/upload/v1494274636/banner_title.png"></Img>
+					</Col>
+					<Col xs={6}>
+						<FacebookLike sdkLoaded={this.props.sdkLoaded} href="https://www.facebook.com/theplasticsrevolutionmx"/>
+					</Col>
+				</Row>
+			</div>
+		);
 	}
 }
 

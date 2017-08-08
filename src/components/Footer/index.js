@@ -7,7 +7,7 @@ import Spotify from 'react-spotify-player';
 
 const A = styled.a`
 	color: ${palette.red};
-	size: 10px;
+	size: 4px;
 	text-decoration: none;
 `;
 
@@ -23,18 +23,17 @@ const theme = 'black'; // or 'white'
 export default class Footer extends Component {
 	render() {
 		return (
-				<Row center='xs' around='xs' middle='xs'>
-					<Col xs={6}>
-						<Spotify
-					  		uri="spotify:album:55Ul8L6tE3eO6JT8L11byT"
-					  		size={size}
-					  		view={view}
-					  	theme={theme}/>
-			  		</Col>
-			  		<Col xs={2}>
-			  			<A href='https://termsfeed.com/privacy-policy/54cb5723bfac5aaec975d816662b8a37'> Privacidad </A>
-			  		</Col>
-				</Row>
-		)
+			<Row around='xs' center='xs' middle='xs'>
+				<Col xs={12}>
+					<Spotify
+				  		uri={this.props.playThis}
+				  		size={size}
+				  		view={view}
+				  		theme={theme}
+				  	/>
+		  		</Col>
+		  		<Col> <A href="https://termsfeed.com/privacy-policy/54cb5723bfac5aaec975d816662b8a37"> ◕ ◡ ◕ </A> </Col>
+			</Row>
+		);
 	}
 }
