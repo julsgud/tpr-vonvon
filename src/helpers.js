@@ -1,3 +1,8 @@
+// Helpers.js
+// Additional helper methods used across app,
+// mostly used only once.
+
+// Check if mobile user agent is Safari
 export const isSafari = () => {
 	let ua = navigator.userAgent.toLowerCase(); 
 	// console.log(ua);
@@ -12,6 +17,8 @@ export const isSafari = () => {
 	}
 }
 
+// Create a 16:9 resolution canvas based on screen dimensions.
+// Limit width to 800px
 export const findCanvasDimensions = () => {
 	let c = {};
 
@@ -28,6 +35,7 @@ export const findCanvasDimensions = () => {
 	return c;
 }
 
+// Find picture frame dimensions based on html canvas size
 export const findFrameDimensions = (c) => {
 	let f = {};
 
@@ -43,6 +51,7 @@ export const getRandomBetween = (min, max) => {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
 
+// Retrieve information to fit user image into frame based on facial recognition data from Kairos API
 export const getFrame1Helpers = (type, srcWidth, srcHeight, frame, frameWidth, frameHeight, imageAnalysis) => {
 	let s = {};
 	const boxX = imageAnalysis.topLeftX;
@@ -92,6 +101,7 @@ export const getFrame1Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 	}
 }
 
+// Retrieve information to fit face in image into frame based on facial recognition data from Kairos API
 export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, frameHeight, imageAnalysis) => {
 	let s = {};
 	const boxX = imageAnalysis.topLeftX;
@@ -111,14 +121,6 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// where to start cut
 		s.x = boxX - xBuffer;
 		s.y = boxY - yBuffer;
-
-		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
-		// console.log('_________-------________-------');
 
 		// Corrections
 		// 1. If face is already large, keep it like in first frame
@@ -186,13 +188,6 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 			s.y = 0;
 		}
 
-		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
-
 		// frame dims
 		s.frameX = frame.x;
 		s.frameY = frame.y;
@@ -212,14 +207,6 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 		// where to start cut
 		s.x = boxX - xBuffer;
 		s.y = boxY - yBuffer;
-
-		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
-		// console.log('_________-------________-------');
 
 		// Corrections
 		// 1. If face is already large, keep it like in first frame
@@ -283,13 +270,6 @@ export const getFrame2Helpers = (type, srcWidth, srcHeight, frame, frameWidth, f
 			s.x = 0;
 			s.y = boxY - (Math.abs(boxHeight - s.h))/2;
 		}
-
-		// console.log('* boxW: ' + boxWidth + ' boxH: ' + boxHeight);
-		// console.log('** srcWidth: ' + srcWidth + ' srcHeight: ' + srcHeight);
-		// console.log('** frameWidth: ' + frameWidth.toFixed(2) + ' frameheight: ' + frameHeight.toFixed(2));
-		// console.log('*** s.w: ' + s.w.toFixed(2) + ' s.h: ' + s.h.toFixed(2));
-		// console.log('**** s.x: ' + s.x.toFixed(2) + ' s.y: ' + s.y.toFixed(2));
-		// console.log('***** xBuffer: ' + xBuffer.toFixed(2) + ' yBuffer: ' + yBuffer.toFixed(2));
 
 		// frame dims
 		s.frameX = frame.x;

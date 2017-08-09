@@ -1,3 +1,9 @@
+// Creatures.js
+// Helper methods that retrieve information and resources
+// to correctly select and draw creatures.
+
+
+// Retrieve all information about individual creature using an index
 export const pickCreature = (index) => {
 	let o = {};
 
@@ -62,6 +68,7 @@ export const pickCreature = (index) => {
 	return o;
 };
 
+// Retrieve creature image url from Cloudinary with specific size
 export const getCreatureUrl = (size, code, name) => {
 	if (name == 'rey') {
 		return 'https://res.cloudinary.com/julsgc/image/upload/a_hflip,c_scale,q_100,w_' + size + '/' + code + '/' + name + '.png';
@@ -70,10 +77,11 @@ export const getCreatureUrl = (size, code, name) => {
 	}
 };
 
+// Retrieve creature object image url from Cloudinary
+// Perform certain modifications based on facial analysis data.
 export const getObjectUrl = (objectIndex, face, creature, frame) => {
 	let url = '';
 	let size, rotation;
-	// console.log('***** log 0 - ' + face);
 
 	switch(creature.name) {
 		case 'joto':
@@ -205,6 +213,7 @@ export const getObjectUrl = (objectIndex, face, creature, frame) => {
 	return url;
 }
 
+// Retrieve star frame url
 export const getStarUrl = (index) => {
 	let url = '';
 
@@ -226,6 +235,8 @@ export const getStarUrl = (index) => {
 	return url;
 }
 
+// Retrieve information that aids in correctly drawing
+// creatures in the canvas.
 export const getCreatureHelpers = (name, srcWidth, srcHeight, frameX, frameY, frameWidth, frameHeight) => {
 	let s = {};
 
@@ -290,6 +301,7 @@ export const getCreatureHelpers = (name, srcWidth, srcHeight, frameX, frameY, fr
 	return s;
 };
 
+// Retrieve individual description for each creature based on gender
 export const getCreatureDescription = (creature, gender) => {
 	let str = '';
 
@@ -334,6 +346,8 @@ export const getCreatureDescription = (creature, gender) => {
 	return str;
 };
 
+// Retrieve information to correctly draw objects
+// over image based on facial analysis data.
 export const getObjectHelpers = (creature, objectIndex, frame, face, obj) => {
 	let o = {};
 
