@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {bool} from 'prop-types';
 import styled from 'styled-components';
 import {Row, Col} from 'react-flexbox-grid';
 
@@ -18,7 +19,7 @@ const Img = styled.img`
 	/*min-height: 100%;*/
 `;
 
-export default class Header extends Component {
+class Header extends Component {
 	render() {
 		return (
 			<div>
@@ -34,4 +35,10 @@ export default class Header extends Component {
 		);
 	}
 }
+
+Header.propTypes = {
+	sdkLoaded: bool
+}
+
+export default Header;
 

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {func, object} from 'prop-types';
 
 import FacebookLogin from 'components/FacebookLogin';
 import {Row, Col} from 'react-flexbox-grid';
@@ -15,10 +16,6 @@ const buttonStyle = {
 }
 
 class Home extends Component {
-	componentDidMount() {
-		console.log('** 2 **: Mounted Home Component');
-	}
-
 	render() {
 		return(
 			<Row center='xs' around='xs' middle='xs'>
@@ -39,8 +36,9 @@ class Home extends Component {
 }
 
 Home.propTypes = {
-	history: React.PropTypes.object
+	history: object,
+	infoHandler: func,
+	imageHandler: func,
 }
-
 
 export default Home;

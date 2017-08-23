@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {string, oneOf, bool, oneOfType, number} from 'prop-types';
 
+// Based on react-facebook Like component
 export default class FacebookLike extends Component {
 	static propTypes = {
 		language: string.isRequired,

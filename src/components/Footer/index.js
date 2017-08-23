@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import {string} from 'prop-types';
 import styled from 'styled-components';
-import {Grid, Row, Col} from 'react-flexbox-grid';
+import {Row, Col} from 'react-flexbox-grid';
 import palette from 'palette';
 
 import Spotify from 'react-spotify-player';
@@ -16,11 +17,12 @@ const size = {
   width: '100%',
   height: 100,
 };
-
 const view = 'coverart'; // or 'coverart'
 const theme = 'black'; // or 'white'
 
-export default class Footer extends Component {
+// Component displaying spotify player
+// and privacy policy link
+class Footer extends Component {
 	render() {
 		return (
 			<Row around='xs' center='xs' middle='xs'>
@@ -37,3 +39,9 @@ export default class Footer extends Component {
 		);
 	}
 }
+
+Footer.propTypes = {
+	playThis: string
+}
+
+export default Footer;

@@ -30,6 +30,7 @@ class App extends Component {
 	constructor() {
 		super();
 
+		// Load state from local storage if available
 		if (loadState()) {
 			let user = loadState();
 			this.state = {
@@ -37,8 +38,6 @@ class App extends Component {
 				isSdkLoaded: false,
 				music: 'spotify:track:1t5ZZxitYzzka5BisJLVXf'
 			}
-			console.log('** 0 **: State Reloaded');
-			// console.log(this.state.user);
 		} else {
 			this.state = {
 				user: {
@@ -59,6 +58,8 @@ class App extends Component {
 		this.handleSong = this.handleSong.bind(this);
 	}
 
+	// Setup FB SDK
+	// More info --> https://developers.facebook.com/quickstarts/1418273384901709/?platform=web
 	componentWillMount() {
 		if (document.getElementById('facebook-jssdk')) {
 			this.sdkLoaded();
@@ -75,6 +76,8 @@ class App extends Component {
 		}
 	}
 
+	// Cloudinary API config
+	// Great free image storage/manipulation service.
 	initCloudinary() {
 		cloudinary.config({
 			cloud_name: 'julsgc',
@@ -83,6 +86,7 @@ class App extends Component {
 		});
 	}
 
+	// Fb init options
 	setFbAsyncInit() {
 		const appId = '1418273384901709';
 		window.fbAsyncInit = () => {
@@ -98,12 +102,7 @@ class App extends Component {
 
 	checkLoginAfterRefresh(response) {
 		if (response.status === 'connected') {
-			console.log('** connected to FB **');
-		} else {
-			// redirect to home for reconnection
-			// window.FB.login((loginResponse) => {
-			// 	console.log(loginResponse);
-			// });
+			console.log('** Already connected to FB **');
 		}
 	}
 
@@ -121,13 +120,9 @@ class App extends Component {
 
 	sdkLoaded() {
 		this.setState({isSdkLoaded: true});
-		console.log('** fb-sdk loaded ** ');
 	}
 
-	componentDidMount() {
-		console.log('** 1 **: Mounted App Component');
-	}
-
+	// Save user info to state
 	handleUserInfo(data) {
 		let info = data;
 		let newState = update(this.state, {
@@ -136,9 +131,9 @@ class App extends Component {
 		this.setState(newState, () => {
 			saveState(this.state.user);
 		});
-		console.log('* User info updated *');
 	}
 
+	// Save images to state
 	handleImages(data) {
 		let images = data;
 		let newState = update(this.state, {
@@ -147,9 +142,9 @@ class App extends Component {
 		this.setState(newState, () => {
 			saveState(this.state.user);
 		});
-		console.log('* User images updated *');
 	}
 
+	// Save selected image to state
 	handleSelectedImage(data) {
 		let selection = data;
 		let newState = update(this.state, {
@@ -158,9 +153,9 @@ class App extends Component {
 		this.setState(newState, () => {
 			saveState(this.state.user);
 		});
-		console.log('* User selection updated *');
 	}
 
+	// Save error to state to display on image reselection
 	handleError(data) {
 		let error = data;
 		let newState = update(this.state, {
@@ -169,6 +164,7 @@ class App extends Component {
 		this.setState(newState);
 	}
 
+	// Save selected song info to state
 	handleSong(data) {
 		let music = data;
 		let newState = update(this.state, {

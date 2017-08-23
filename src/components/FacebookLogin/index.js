@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import {func} from 'prop-types';
 
 import styled from 'styled-components';
 
@@ -17,6 +18,7 @@ const Button = styled.button`
 	/*border-radius: 5px;*/
 `;
 
+// Fork from react-facebook
 const getIsMobile = () => {
 	let isMobile = false;
 
@@ -29,14 +31,15 @@ const getIsMobile = () => {
 	return isMobile;
 }
 
+// Automatic facebook login component that requests
+// images and user information
 class FacebookLogin extends React.Component {
-
-	constructor(props) {
-		super(props);
+	constructor() {
+		super();
 		this.state = {
 			isSdkLoaded: true,
 			isProcessing: false
-		};
+		}
 	}
 
 	static defaultProps = {
@@ -58,26 +61,15 @@ class FacebookLogin extends React.Component {
 		tag: 'Button',
 	};
 
+	static propTypes = {
+		infoCallback: func,
+		imageCallback: func
+	};
+
 	static state = {
 		isSdkLoaded: true,
 		isProcessing: false,
 	};
-
-	componentDidMount() {
-		// if (document.getElementById('facebook-jssdk')) {
-		// 	this.sdkLoaded();
-		// 	return;
-		// }
-		// this.setFbAsyncInit();
-		// this.loadSdkAsynchronously();
-		// let fbRoot = document.getElementById('fb-root');
-		// if(!fbRoot) {
-		// 	fbRoot = document.createElement('div');
-		// 	fbRoot.id = 'fb-root';
-		// 	document.body.appendChild(fbRoot);
-		// }
-		// this._isMounted = true;
-	}
 
 	componentWillUnmount() {
 		this._isMounted = false;
@@ -227,10 +219,6 @@ class FacebookLogin extends React.Component {
 			</Button>
 		);
 	}
-}
-
-FacebookLogin.propTypes = {
-	picHandler: React.PropTypes.func
 }
 
 export default FacebookLogin;
