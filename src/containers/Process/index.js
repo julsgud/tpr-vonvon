@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {object, func} from 'prop-types';
 
 import {Row, Col} from 'react-flexbox-grid';
 import Loading from 'react-loading';
@@ -12,14 +13,13 @@ import FacebookShare from 'components/FacebookShare';
 import palette from 'palette';
 import {getFirstAnalysis, getSecondAnalysis} from 'requests';
 import {pickCreature, getCreatureUrl, getObjectUrl, getStarUrl, getCreatureHelpers, getCreatureDescription, getObjectHelpers} from 'creatures';
-import {isSafari, findCanvasDimensions, findFrameDimensions, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
+import {isSafari, getFirstName, findCanvasDimensions, findFrameDimensions, findImageType, findLargestImage, getFrame1Helpers, getFrame2Helpers, getRandomBetween} from 'helpers';
 
 const Img = styled.img`
 	max-width: 100%;
 `;
 
 const H3 = styled.h3`
-	/*color: ${palette.black};*/
 	margin-bottom: 0;
 `;
 
@@ -27,13 +27,13 @@ const HiddenCanvas = styled.canvas`
 	display: none;
 `;
 
-const P = styled.p`
-	color: palette.blue;
-`;
-
+// Info for facial recognition API
 const KAIROS_ID = '69e02886';
 const KAIROS_KEY = '6423bdb83597bcfe304c3752576a190d';
 
+// Process Component
+// Takes user images and processes them to
+// achieve final result.
 class Process extends Component {
 	constructor(props) {
 		super(props);
@@ -62,20 +62,28 @@ class Process extends Component {
 	}
 
 	componentWillMount() {
+		// Determine largest possible canvas dimensions
 		const c = findCanvasDimensions();
 
+		// Use canvas dimensions to find frame dimensions
 		const f = findFrameDimensions(c);
 
-		const t = this.findImageType(this.props.image);
+		// Figure out if image is portrait, landscape or square
+		const t = findImageType(this.props.image);
 
-		const i = this.findLargestImage();
+		// Find largest resolution 
+		const i = findLargestImage(this.props.image.images);
 
+		// Randomly select a creature for a particular experience
 		const cr = pickCreature(getRandomBetween(0, 4));
-		// const cr = pickCreature(4);
+
+		// Save song selection based on creature
 		this.props.songHandler(cr.song);
 
+		// Find user gender to select experience
 		const g = this.props.user.gender;
 
+		// Save all information to state
 		let newState = update(this.state, {
 			canvas: {$set: c},
 			frame: {$set: f},
@@ -90,43 +98,14 @@ class Process extends Component {
 		});
 	}
 
-	findLargestImage() {
-		const array = this.props.image.images;
-		let largest = Number.NEGATIVE_INFINITY;
-		let smallest = Number.POSITIVE_INFINITY;
-		let tmp, index;
-
-		for (let i = 0; i < array.length; i++) {
-			tmp = array[i].width;
-			if (tmp < smallest) smallest = tmp;
-			if (tmp > largest) {
-				largest = tmp;
-				index = i;
-			}
-		}
-
-		return array[index];
-	}
-
-	findImageType(image) {
-		let str = '';
-
-		if (image.images[0].width == image.images[0].height) {
-			str = 'square';
-		} else if (image.images[0].width > image.images[0].height) {
-			str = 'landscape';
-		} else {
-			str = 'portait';
-		}
-
-		return str;
-	}
-
+	// As soon as component mounts,
+	// send first picture to Kairos for analysis
 	componentDidMount() {
-		console.log('** 2 **: Mounted Process Component');
 		return getFirstAnalysis(this.state.imageSource, KAIROS_ID, KAIROS_KEY, this.handleFirstAnalysis, this.props.errorHandler, this.props.history);
 	}
 
+	// When information returns,
+	// Draw for second analysis and then draw objects
 	componentDidUpdate() {
 		if (this.state.loading && this.state.firstAnalysis && this.state.processing) {
 			this.drawCanvasForSecondAnalysis();
@@ -135,6 +114,8 @@ class Process extends Component {
 		}
 	}
 
+	// Save first analysis
+	// Bool true to allow first drawing
 	handleFirstAnalysis(response) {
 		const data = response;
 		const newState = update(this.state, {
@@ -146,6 +127,8 @@ class Process extends Component {
 		});
 	}
 
+	// Save second analysis
+	// Bool true to allow drawing objects
 	handleSecondAnalysis(response) {
 		const data = response;
 		const newState = update(this.state, {
@@ -157,15 +140,18 @@ class Process extends Component {
 		});
 	}
 
+	// Draws two frames with user picture and third frame with creature
+	// Canvas is hidden using css, only used for further processing
 	drawCanvasForSecondAnalysis() {
 		const {canvas, frame, imageAnalysis, imageSource, imageType, creature, image} = this.state;
 
+		// Get canvas and context from DOM node and set dimensions
 		const c = document.getElementById('c');
+		const ctx = c.getContext('2d');
 		c.width = canvas.width;
 		c.height = canvas.height;
-		const ctx = c.getContext('2d');
 
-		// get width and height from state
+		// get width and height from DOM node
 		const w = c.width;
 		const h = c.height;
 		// console.log('** window: w' + window.innerWidth +'px h' + window.innerHeight + 'px ** canvas: ' + c.width + 'px h' + c.height+ 'px');
@@ -175,9 +161,9 @@ class Process extends Component {
 		const frameHeight = frame.height;
 		const xMargin = frame.xMargin;
 		const yMargin = frame.yMargin;
-
 		// console.log('** frameWidth: ' + frameWidth + ' ** frameHeight: ' + frameHeight);
 
+		// Determine frame information
 		const frame1 = {
 			'x': xMargin,
 			'y': yMargin
@@ -200,9 +186,7 @@ class Process extends Component {
 		let o1h = {};
 		let o2h = {};
 
-		/*
-			Draw Images in order
-		*/
+		// Image objects to be used inside canvas element
 		const img = new Image();
 		const img2 = new Image();
 		const img3 = new Image();
@@ -222,7 +206,7 @@ class Process extends Component {
 			img.src = imageSource;
 		}
 
-		// user frame for mods
+		// user frame to draw objects on
 		const loadImage2 = () => {
 			img2.onload = () => {
 				loadImage3();
@@ -248,7 +232,7 @@ class Process extends Component {
 			img3.src = getCreatureUrl(frameHeight.toFixed(0).toString(), creature.code, creature.name);
 		}
 
-		// star frame
+		// stars on second frame
 		const loadStar0 = () => {
 			star0.onload = () => {
 				loadStar1();
@@ -284,6 +268,8 @@ class Process extends Component {
 			star3.src = getStarUrl(3);
 		}
 
+		// Get image blob from canvas
+		// send to Kairos for second analysis
 		const getBlobForAnalysis = () => {
 			this.setState({processing: false});
 
@@ -297,13 +283,15 @@ class Process extends Component {
 			return getSecondAnalysis(png, KAIROS_ID, KAIROS_KEY, this.handleSecondAnalysis, this.props.errorHandler, this.props.history);
 		}
 
+		// init
 		loadImage1();
 	}
 
+	// Draws objects on first image blob using second analysis
+	// Canvas is hidden using css, only used for further processing
 	drawCanvasWithObjects() {
 		const {canvas, frame, imageAnalysis2, imageBlob, creature} = this.state;
 		let middleFace;
-		// console.log(imageAnalysis2);
 
 		for (let i = 0; i < imageAnalysis2.faces.length; i++) {
 			if (imageAnalysis2.faces[i].chinTipX > 100) {
@@ -312,23 +300,25 @@ class Process extends Component {
 			}
 		}
 		
+		// Use a second canvas to draw final image
+		// Get canvas and context from DOM node
+		// Set dimensions using state
 		const c = document.getElementById('c2');
+		const ctx = c.getContext('2d');
 		c.width = canvas.width;
 		c.height = canvas.height;
-		const ctx = c.getContext('2d');
 
-		// helpers objs
+		// helper objs
 		let oh1 = {};
 		let oh2 = {};
 		let oh3 = {};
 
-		// image objs
+		// image objects to draw in canvas
 		const img = new Image();
 		const obj1 = new Image();
 		const obj2 = new Image();
 		const obj3 = new Image();
 
-		// drawing funcs
 		const loadImage1 = () => {
 			img.onload = () =>  {
 				loadObj1();
@@ -371,17 +361,11 @@ class Process extends Component {
 			obj3.src = getObjectUrl(2, middleFace, creature, frame);
 		}
 
+		// Save canvas to image blob
+		// Upload result to cloudinary
+		// Save image url response to state
 		const getFinalBlob = () => {
 			const png = c2.toDataURL();
-
-			// const newState = update(this.state, {
-			// 	finalImage: {$set: png},
-			// 	loading: {$set: false}
-			// });
-
-			// return this.setState(newState, () => {
-			// 	// console.log(this.state);
-			// });
 
 			return cloudinary.uploader.upload(png, (response) => {
 				// console.log(response);
@@ -397,18 +381,8 @@ class Process extends Component {
 			});
 		}
 
-		
-
+		// init
 		loadImage1();
-	}
-
-	getFirstName(name) {
-		let str = name;
-		let s;
-
-		s = str.substr(0, str.indexOf(' '));
-
-		return s;
 	}
 
 	render() {
@@ -436,8 +410,8 @@ class Process extends Component {
 			);
 		} else {
 			const description = getCreatureDescription(this.state.creature, this.props.user.gender);
-			const title = this.getFirstName(this.props.user.name) + ', te pareces ' + this.state.creature.title;
-			const titleFB = this.getFirstName(this.props.user.name) + ' se parece ' + this.state.creature.title;
+			const title = getFirstName(this.props.user.name) + ', te pareces ' + this.state.creature.title;
+			const titleFB = getFirstName(this.props.user.name) + ' se parece ' + this.state.creature.title;
 			const safariBool = isSafari();
 
 			return (
@@ -449,7 +423,7 @@ class Process extends Component {
 						<Img id="i" src={this.state.finalImage}></Img>
 					</Col>
 					<Col xs={12}>
-						<P> {description} </P>
+						<p> {description} </p>
 					</Col>
 					<Col xs={6}>
 						<FacebookShare isSafari={safariBool} title={titleFB} image={this.state.finalImage}/>
@@ -461,7 +435,11 @@ class Process extends Component {
 }
 
 Process.propTypes = {
-	history: React.PropTypes.object
-}
+	image: object,
+	user: object,
+	songHandler: func,
+	errorHandler: func,
+	history: object
+};
 
 export default Process;

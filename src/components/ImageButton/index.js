@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Col} from 'react-flexbox-grid';
 import styled from 'styled-components';
 
@@ -16,7 +16,9 @@ const Button = styled.button`
 	margin: 0;
 `;
 
-class ImageButton extends React.Component {
+// ImageButton Component
+// Get small image and attach click function for selection
+class ImageButton extends Component {
 	constructor(props) {
 		super(props);
 
@@ -30,7 +32,7 @@ class ImageButton extends React.Component {
 	getImageThumbnailUrl(img) {
 		let url;
 
-		// 2. find ~200px image in images array
+		// find <=200px image in images array
 		for (let i = 0; i < img.images.length; i++) {
 			if (img.images[i].height <= 200 || img.images[i].width <= 200) {
 				url = img.images[i].source;

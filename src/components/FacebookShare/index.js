@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {bool, string} from 'prop-types';
 
 import styled from 'styled-components';
 
@@ -15,7 +16,6 @@ const Button = styled.button`
 	line-height: 50px;
 	white-space: nowrap;
 	/*border-radius: 5px;*/
-	display: none;
 `;
 
 const Button2 = styled.button`
@@ -36,27 +36,28 @@ const P = styled.p`
 	color: #f31c21;
 `;
 
+// Based on react-facebook
+// Automatically share image through pop-up window
 export default class FacebookShare extends Component {
 	static defaultProps = {
 		textButton: 'Comparte en FB!',
 		typeButton: 'button'
+	};
+
+	static propTypes = {
+		isSafari: bool,
+		title: string,
+		image: string
 	}
 
 	componentDidMount() {
 		const {image} = this.props;
 	}
 
-	click() {
-		// window.URL = window.URL || window.webkitURL;
-
+	handleClick() {
 		return window.FB.ui({
 			method: 'feed',
-			name: this.props.title,
-			link: 'https://plasticsrev.club',
-			caption: 'The Plastics Revolution ~(˘▾˘~)',
-			description: 'Y tu a cuál de los #SeresExtraordinarios te pareces?!',
-			tags: ['#SeresExtraordinarios', '#ThePlasticsRevolution', '#TPRVONVON'],
-			picture: this.props.image
+			link: 'https://julsgud.github.io/tpr-vonvon/#/',
 		}, (response) => {
 			// console.log(response);
 		});
@@ -66,14 +67,12 @@ export default class FacebookShare extends Component {
 		const {typeButton, textButton} = this.props;
 
 		if (this.props.isSafari) {
-			// console.log('saf');
 			return(
 				<P> (☞ﾟヮﾟ)☞ Haz click en tu imagen para salvarla y compártela en Facebook! ☜(ﾟヮﾟ☜) </P>
 			);
 		} else {
-			// console.log('noSaf');
 			return(
-				<Button type={typeButton} onClick={this.click()}>
+				<Button type={typeButton} onClick={() => this.handleClick()}>
 					{textButton}
 				</Button>
 			);

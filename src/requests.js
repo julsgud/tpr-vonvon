@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Analyze user image from FB
 export const getFirstAnalysis = (image, KAIROS_ID, KAIROS_KEY, handleResponse, errorHandler, history) => {
 	return axios({
 		method: 'post',
@@ -20,6 +21,7 @@ export const getFirstAnalysis = (image, KAIROS_ID, KAIROS_KEY, handleResponse, e
 	});
 }
 
+// Analyze html canvas export to add objects
 export const getSecondAnalysis = (image, KAIROS_ID, KAIROS_KEY, handleResponse, errorHandler, history) => {
 	return axios({
 		method: 'post',
@@ -42,6 +44,8 @@ export const getSecondAnalysis = (image, KAIROS_ID, KAIROS_KEY, handleResponse, 
 	});
 }
 
+// Check Kairos API response to handle errors, return user to
+// image select on errors.
 const checkForAnalysisErrors = (response, errorHandler, history) => {
 	if (analysisFailed(response)) {
 		if (noFacesFound(response)) {

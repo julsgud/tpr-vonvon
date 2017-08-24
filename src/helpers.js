@@ -17,6 +17,17 @@ export const isSafari = () => {
 	}
 }
 
+// Get first name from full name
+// Returns String
+export const getFirstName = (name) => {
+	let str = name;
+	let s;
+
+	s = str.substr(0, str.indexOf(' '));
+
+	return s;
+}
+
 // Create a 16:9 resolution canvas based on screen dimensions.
 // Limit width to 800px
 export const findCanvasDimensions = () => {
@@ -30,12 +41,11 @@ export const findCanvasDimensions = () => {
 		c.height = (c.width*9)/16;
 	}
 
-	// console.log(c);
-
 	return c;
 }
 
 // Find picture frame dimensions based on html canvas size
+// Returns object
 export const findFrameDimensions = (c) => {
 	let f = {};
 
@@ -45,6 +55,42 @@ export const findFrameDimensions = (c) => {
 	f.height = c.height - (f.yMargin * 2);
 
 	return f;
+}
+
+// Figure out if image is portrait, landscape or square
+// Returns string
+ export const findImageType = (image) => {
+	let str = '';
+
+	if (image.images[0].width == image.images[0].height) {
+		str = 'square';
+	} else if (image.images[0].width > image.images[0].height) {
+		str = 'landscape';
+	} else {
+		str = 'portait';
+	}
+
+	return str;
+}
+
+// Find largest image that can be used for better resolution
+// Returns object
+export const findLargestImage = (images) => {
+	const array = images;
+	let largest = Number.NEGATIVE_INFINITY;
+	let smallest = Number.POSITIVE_INFINITY;
+	let tmp, index;
+
+	for (let i = 0; i < array.length; i++) {
+		tmp = array[i].width;
+		if (tmp < smallest) smallest = tmp;
+		if (tmp > largest) {
+			largest = tmp;
+			index = i;
+		}
+	}
+
+	return array[index];
 }
 
 export const getRandomBetween = (min, max) => {

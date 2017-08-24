@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {bool, object, array, string, func} from 'prop-types';
 import update from 'immutability-helper';
 
 import ImageButton from 'components/ImageButton';
@@ -7,6 +8,7 @@ import {Row, Col} from 'react-flexbox-grid';
 import Loading from 'react-loading';
 
 import styled from 'styled-components';
+import {getFirstName} from 'helpers';
 import palette from 'palette';
 
 const Img = styled.img`
@@ -14,6 +16,8 @@ const Img = styled.img`
 	width: 200px;
 `;
 
+// Load user profile pictures from FB
+// Display usable images for selection
 class Select extends Component {
 	constructor(props) {
 		super(props);
@@ -30,7 +34,6 @@ class Select extends Component {
 	}
 
 	componentDidMount() {
-		console.log('** 2 **: Mounted Select Component');
 		this.requestImages();
 	}
 
@@ -38,6 +41,7 @@ class Select extends Component {
 		this.requestImages();
 	}
 
+	// Programmatically get images from FB
 	requestImages() {
 		if (this.props.ready && !this.state.loading) {
 			this.setState({loading: true});
@@ -47,6 +51,10 @@ class Select extends Component {
 		}
 	}
 
+	// FB API images request
+	// Requires special permission from application
+	// to request images setting at FB for Developers
+	// Count number of images returned to limit selection
 	getImage(i) {
 		return window.FB.api('/' + this.props.images[i] + '?fields=images', (response) => {
 			let isPortrait = false;
@@ -73,18 +81,10 @@ class Select extends Component {
 
 	loadedAllImages() {
 		this.setState({spinner: false});
-		console.log('** loaded all images **');
 	}
 
-	getFirstName(name) {
-		let str = name;
-		let s;
-
-		s = str.substr(0, str.indexOf(' '));
-
-		return s;
-	}
-
+	// Save selection to state in parent component
+	// Programatically route to process page
 	handleClick(data) {
 		this.props.selectionHandler(data);
 		this.props.history.push('/process');
@@ -94,7 +94,7 @@ class Select extends Component {
 		let h;
 
 		if (!this.props.errorMessage) {
-			h = 'Hey ' + this.getFirstName(this.props.info.name) + ', escoge una foto donde se vea tu cara!';
+			h = 'Hey ' + getFirstName(this.props.info.name) + ', escoge una foto donde se vea tu cara!';
 		} else {
 			h = this.props.errorMessage;
 		}
@@ -106,7 +106,8 @@ class Select extends Component {
 		let imageButtons = [];
 
 		let headerText = this.buildHeaderText();
-
+		
+		
 		if (this.state.spinner) {
 			return(
 				<Row center='xs'>
@@ -136,7 +137,12 @@ class Select extends Component {
 }
 
 Select.propTypes = {
-	history: React.PropTypes.object
+	ready: bool,
+	info: object,
+	images: array,
+	errorMessage: string,
+	selectionHandler: func,
+	history: object
 }
 
 export default Select;
